@@ -1,0 +1,9 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+172.20.6.15  cndh1322-6-15.ptmind.com gp-master
+172.20.6.16  cndh1322-6-16.ptmind.com gp-standby
+172.20.6.11  cndh1321-6-11.ptmind.com sg11
+172.20.6.12  cndh1321-6-12.ptmind.com sg12
+172.20.6.13  cndh1321-6-13.ptmind.com sg13
+172.20.6.14  cndh1321-6-14.ptmind.com sg14

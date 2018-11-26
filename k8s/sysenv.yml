@@ -1,0 +1,42 @@
+---
+- hosts: gpall
+  remote_user: root
+  tasks:
+  - shell: grubby --update-kernel=ALL --args="transparent_hugepage=never" --args="LANG=zh_CN.UTF-8" --args="elevator=deadline"
+
+  - name:  1.close selinux
+    shell: "setenforce 0"
+    failed_when: false
+
+  - name: 2.修改文件打开限制
+    copy: src=/workspace/gpdb/limits.conf dest=/etc/security/limits.conf mode=0644 owner=root group=root backup=yes
+
+  - name: 3.修改系统内 禁用大页 hosts 
+    copy: src=/workspace/gpdb/{{ item }} dest=/etc/{{ item }} mode=0755 owner=root group=root backup=yes
+    with_items:
+    - hosts
+    - rc.local
+    - ld.so.conf
+    - sysctl.conf
+
+  - name:  4.加载 ld.so.conf
+    shell: ldconfig
+    failed_when: false
+
+  - name: 5.stop freewalld
+    service: name={{ item }} state=stopped
+    with_items:
+    - firewalld
+    ignore_errors: true
+
+  - name: 6.forever close selinux
+    lineinfile: 
+      dest: /etc/selinux/config
+      regexp: "^SELINUX= "
+      line: "SELINUX=disabled"
+
+#  - name: 7.install base pkg
+#    yum: name={{ item }} state=installed
+#    with_together:
+#    - [ wget,tree,git,nmap,ccze,lrzsz,telnet,libXaw,libXpm ]
+
