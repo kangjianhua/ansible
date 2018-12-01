@@ -1,0 +1,40 @@
+---
+#- hosts: ecology
+- hosts: ddstaging
+#- hosts: "{{ host }}"
+  remote_user: root
+  tasks:
+  - name: 1.1 install java-1.8
+    yum: name=java-1.8.0 state=latest 
+
+  - name: 1.2 修改配置文件
+    copy: src=/workspace/metricbeat/{{ item }} dest=/etc/yum.repos.d/{{ item }} mode=0755 backup=yes
+    with_items:
+    - es.repo
+
+  - name:  1.3 Download and install the public signing key
+    shell: rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    failed_when: false
+
+  - name: 1.4 install metricbeat
+    yum: name=metricbeat state=latest
+
+  - name: 2.1.修改beat配置文件
+    copy: src=/workspace/metricbeat/{{ item }} dest=/etc/metricbeat/{{ item }} mode=0755 backup=yes
+    with_items:
+    - metricbeat.yml
+ 
+  - name:  2.2.enable  modules
+    shell: "metricbeat modules docker"
+
+  - name: 2.3.同步配置文件 
+    copy: src=/workspace/metricbeat/modules/{{ item }} dest=/etc/metricbeat/modules.d/{{ item }} mode=0755
+    with_items:
+    - docker.yml
+    - system.yml
+
+  - name:  2.4.start metricbeat 
+    shell: "/etc/init.d/metricbeat restart"
+
+  - name:  2.5.chkconfig --add  metricbeat
+    shell: "chkconfig --add  metricbeat"

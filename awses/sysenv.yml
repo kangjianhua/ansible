@@ -1,0 +1,16 @@
+---
+- hosts: esbak
+  remote_user: root
+  tasks:
+  - name: 3.修改datanode配置文件
+    copy: src=/workspace/esbak/{{ item }} dest=/etc/elasticsearch/{{ item }} mode=0755 owner=elasticsearch group=elasticsearch backup=yes
+    with_items:
+    - elasticsearch.yml.datanode
+
+- hosts: esbak-master
+  remote_user: root
+  tasks:
+  - name: 3.修改master配置文件
+    copy: src=/workspace/esbak/{{ item }} dest=/etc/elasticsearch/{{ item }} mode=0755 owner=elasticsearch group=elasticsearch backup=yes
+    with_items:
+    - elasticsearch.yml.masternode
