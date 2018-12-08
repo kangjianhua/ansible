@@ -1,0 +1,16 @@
+---
+- hosts: cnlvs
+  remote_user: root
+  tasks:
+  - name: 1.传输脚本
+    copy: src=/Users/kevin/workspace/ansible/cnlvs/ps.sh  dest=/tmp/ps.sh mode=0755 owner=root group=root 
+
+  - name: 2.查看脚本
+    shell: sh /tmp/ps.sh && echo "$(date +%Y%m%d%H%M)" > /tmp/ps.sh
+
+#  - name: 3.PermitRootLogin without-password
+#    lineinfile: 
+#      dest: /etc/selinux/config
+#      regexp: "^PermitRootLogin "
+#      line: "PermitRootLogin without-password"
+
