@@ -1,0 +1,37 @@
+actions:
+  1:
+    action: delete_indices
+    description: >-
+      删除超过20天的索引（基于索引名称），monitoring-*
+      前缀索引。如果过滤器没有导致错误，请忽略错误
+      可操作的索引列表（ignore_empty_list）并彻底退出.
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+      kind: regex
+      value: '^(\.monitoring-(es|kibana|logstash)-).*$'
+    - filtertype: age
+      source: name
+      direction: older
+      timestring: '%Y.%m.%d'
+      unit: days
+      unit_count: 20
+  2:
+    action: delete_indices
+    description: >-
+      删除超过20天的索引（基于索引名称ptlog），用于metricbeat-6.2.2-前缀索引。
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog
+    - filtertype: age
+      source: name
+      direction: older
+      timestring: '%Y.%m.%d'
+      unit: days
+      unit_count: 15
