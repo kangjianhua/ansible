@@ -1,0 +1,25 @@
+---
+# Remember, leave a key empty if there is no value.  None will be a string,
+# not a Python "NoneType"
+#
+# Also remember that all examples have 'disable_action' set to True.  If you
+# want to use this action as a template, be sure to set this to False after
+# copying it.
+actions:
+  1:
+    description: >-
+      'Reindex all filebeat-6.4.3-2018.11. 索引到 filebeat-6.4.3-2018.11.
+    action: reindex
+    options:
+#      disable_action: True
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: filebeat-6.4.3-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: filebeat-6.4.3-2018.11.

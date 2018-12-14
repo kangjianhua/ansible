@@ -9,27 +9,23 @@ actions:
   1:
     action: shrink
     description: >-
-      Shrink logstash indices older than 2 days on the node with the most
-      available space, excluding the node named 'not_this_node'.
-      Delete each source index after successful shrink, then reroute the shrunk
-      index with the provided parameters.
+      收缩ptlog-pte-prod-report- 10天以前的索引，闯新的索引名字使用-shrink后缀，然后删除旧索引。
     options:
-      disable_action: False
+ #     disable_action: True
       ignore_empty_list: True
-      shrink_node: DETERMINISTIC
+      shrink_node: cndh1327-11-28
       node_filters:
         permit_masters: False
-        exclude_nodes: ['not_this_node']
+        exclude_nodes: ['cndh1327-11-29']
       number_of_shards: 1
       number_of_replicas: 1
       shrink_prefix:
       shrink_suffix: '-shrink'
-      copy_aliases: True
       delete_after: True
       post_allocation:
         allocation_type: include
         key: node_tag
-        value: cold
+        value: hot
       wait_for_active_shards: 1
       extra_settings:
         settings:
@@ -41,9 +37,9 @@ actions:
     filters:
     - filtertype: pattern
       kind: prefix
-      value: test_shrink-
+      value: ptlog-pte-prod-report-
     - filtertype: age
       source: creation_date
       direction: older
       unit: days
-      unit_count: 2
+      unit_count: 10

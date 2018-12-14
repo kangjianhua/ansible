@@ -34,4 +34,4 @@ actions:
       direction: older
       timestring: '%Y.%m.%d'
       unit: days
-      unit_count: 15
+      unit_count: 10

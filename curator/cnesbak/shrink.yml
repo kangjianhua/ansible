@@ -16,7 +16,7 @@ actions:
     options:
  #     disable_action: True
       ignore_empty_list: True
-      shrink_node: cndh1327-11-26
+      shrink_node: cndh1327-11-28
       node_filters:
         permit_masters: False
         exclude_nodes: ['cndh1327-11-29']
@@ -28,7 +28,7 @@ actions:
       post_allocation:
         allocation_type: include
         key: node_tag
-        value: cold
+        value: hot
       wait_for_active_shards: 1
       extra_settings:
         settings:
@@ -40,7 +40,7 @@ actions:
     filters:
     - filtertype: pattern
       kind: prefix
-      value: ptlog-pte-
+      value: ptlog-pte-prod-report-
     - filtertype: age
       source: creation_date
       direction: older
