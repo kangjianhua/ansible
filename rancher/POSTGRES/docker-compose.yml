@@ -1,0 +1,16 @@
+version: '2'
+services:
+  POSTGRES93:
+    image: postgres:9.3-alpine
+    environment:
+      TZ: Asia/Tokyo
+      POSTGES_USER: dd
+      POSTGRES_PASSWORD: ddadmin
+      POSTGRES_DB: postgra_dogfood
+    stdin_open: true
+    tty: true
+    ports:
+    - 5432:5432/tcp
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: mq=mq

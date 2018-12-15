@@ -1,0 +1,19 @@
+version: '2'
+services:
+  pilot:
+    privileged: true
+    mem_limit: 134217728
+    image: registry.cn-hangzhou.aliyuncs.com/acs-sample/log-pilot
+    environment:
+      ELASTICSEARCH_HOST: internal-query-hot-1455861062.ap-northeast-1.elb.amazonaws.com
+      ELASTICSEARCH_PORT: '9200'
+      LOGGING_OUTPUT: elasticsearch
+      PILOT_TYPE: filebeat
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /:/host
+    mem_reservation: 134217728
+    labels:
+      owner: yunwei
+      io.rancher.scheduler.global: 'true'
+      aliyun.global: 'true'

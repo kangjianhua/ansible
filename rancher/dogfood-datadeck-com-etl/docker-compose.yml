@@ -1,0 +1,213 @@
+version: '2'
+services:
+  01-02-datadeck-gateway:
+    image: reg.ptone.jp/datadeck/dogfood/gateway
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:gatewaydogfood.datadeck.com
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+      io.rancher.scheduler.affinity:host_label: env=dd
+      traefik.port: '9020'
+      io.rancher.container.pull_image: always
+  04-04-datadeck-modules-google-analytics:
+    mem_limit: 1153433600
+    image: reg.ptone.jp/datadeck/datadeck-modules/dogfood/datadeck-modules-google-analytics
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    volumes:
+    - /data/srvlog/datadeck/:/data/datadeck_data_manage/logs/modules-ga/
+    tty: true
+    labels:
+      io.rancher.scheduler.affinity:host_label: env=dd
+      io.rancher.container.pull_image: always
+  04-07-datadeck-modules-upload-file:
+    mem_limit: 2147483648
+    image: reg.ptone.jp/datadeck/datadeck-modules/dogfood/datadeck-modules-uploadfile
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    external_links:
+    - rabbitmq-3/rabbitmq:dogfoodmq.datadeck.com
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: env=dd
+  02-02-datadeck-dataset-etl-dataset:
+    image: reg.ptone.jp/datadeck/dogfood/dataset
+    environment:
+      TZ: Asia/Tokyo
+      ENV: dogfood
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+    stdin_open: true
+    external_links:
+    - dd-dogfood/dd-redis-cluster-dogfood:dogfood.redis.datadeck.com
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: env=dd
+  02-03-datadeck-dataset-etl-datasync:
+    image: reg.ptone.jp/datadeck/dogfood/datasync
+    stdin_open: true
+    external_links:
+    - rabbitmq-3/rabbitmq:dogfoodmq.datadeck.com
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: env=dd
+  02-05-datadeck-dataset-etl-user:
+    mem_limit: 1073741824
+    image: reg.ptone.jp/datadeck/dogfood/user
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: env=dd
+  04-02-datadeck-modules-google-search-console:
+    image: reg.ptone.jp/datadeck/datadeck-modules/dogfood/datadeck-modules-google-search-console
+    environment:
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: env=dd
+  03-01-datadeck-app-datasource:
+    mem_limit: 1153433600
+    image: reg.ptone.jp/datadeck/datadeck-data-manage/dogfood/datadeck-app-datasource
+    environment:
+      TZ: Asia/Tokyo
+      ENV: dogfood
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+    stdin_open: true
+    external_links:
+    - dd-dogfood/dd-redis-cluster-dogfood:dogfood.redis.datadeck.com
+    - rabbitmq-3/rabbitmq:dogfoodmq.datadeck.com
+    tty: true
+    links:
+    - 04-11-datadeck-modules-pinterest:datasource-pinterest
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: env=dd
+  04-03-datadeck-modules-facebookpages:
+    image: reg.ptone.jp/datadeck/datadeck-modules/dogfood/datadeck-modules-facebookpages
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  05-01-datadeck-app-business:
+    image: reg.ptone.jp/datadeck/datadeck-app-business/dogfood/datadeck-app-business
+    environment:
+      TZ: Asia/Tokyo
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: env=dd
+  04-10-datadeck-modules-trello:
+    image: reg.ptone.jp/datadeck/datadeck-modules/dogfood/datadeck-module-trello
+    environment:
+      ENV: dogfood
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  04-06-datadeck-modules-google-drive:
+    mem_limit: 2147483648
+    image: reg.ptone.jp/datadeck/datadeck-modules/dogfood/datadeck-modules-google-drive
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    external_links:
+    - dd-dogfood/dd-redis-cluster-dogfood:dogfood.redis.datadeck.com
+    - rabbitmq-3/rabbitmq:dogfoodmq.datadeck.com
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: env=dd
+  04-11-datadeck-modules-pinterest:
+    mem_limit: 268435456
+    image: reg.ptone.jp/datadeck/datadeck-modules/dogfood/datadeck-modules-pinterest
+    environment:
+      APP_ID: '4994995610720430563'
+      APP_SECRET: bee948e892206e166ec9b5e52fed09961f54bbd0fe5c048be3da4deb9329d81c
+      ENV: dogfood
+      USE_FAKE_DATA: 'True'
+    stdin_open: true
+    tty: true
+    mem_reservation: 268435456
+    labels:
+      io.rancher.container.pull_image: always
+  04-01-datadeck-modules-twitter-microblog:
+    image: reg.ptone.jp/datadeck/datadeck-modules/dogfood/datadeck-modules-twitter-microblog
+    environment:
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  01-01-datadeck-eureka:
+    mem_limit: 1073741824
+    image: reg.ptone.jp/datadeck/dogfood/eureka
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:eurekadogfood.datadeck.com
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+      io.rancher.scheduler.affinity:host_label: env=dd
+      traefik.port: '9010'
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  04-09-datadeck-modules-paypal:
+    image: reg.ptone.jp/datadeck/datadeck-modules/dogfood/datadeck-modules-paypal
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  04-05-datadeck-modules-youtube:
+    image: reg.ptone.jp/datadeck/datadeck-modules/dogfood/datadeck-modules-youtube
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  04-08-datadeck-modules-linkedin:
+    image: reg.ptone.jp/datadeck/datadeck-modules/dogfood/datadeck-modules-linkedin
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  05-02-datadeck-modules-hubspot:
+    image: reg.ptone.jp/datadeck/datadeck-modules/dogfood/datadeck-modules-hubspot
+    environment:
+      ENV: dogfood
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  centos:
+    image: library/centos
+    stdin_open: true
+    tty: true
+    links:
+    - 04-11-datadeck-modules-pinterest:datasource-pinterest
+    - 03-01-datadeck-app-datasource:app-datasource
+    labels:
+      io.rancher.container.pull_image: always

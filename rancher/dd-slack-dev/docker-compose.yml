@@ -1,0 +1,31 @@
+version: '2'
+services:
+  slack:
+    mem_limit: 1073741824
+    image: registry.gitlab.com/ptminddev/datadeck/datadeck-slack/dev/datadeck_slack
+    stdin_open: true
+    volumes:
+    - /data/srvlog/slack/:/data/datadeck_slack/logs
+    tty: true
+    mem_reservation: 1073741824
+    labels:
+      aliyun.logs.ddslack-event: /data/datadeck_slack/logs/event-*.log
+      aliyun.logs.ddslack-event.tags: ”service=ddslack,env=prod“
+      aliyun.logs.ddslack-uwsgi.format: none
+      aliyun.logs.ddslack-event.format: json
+      aliyun.logs.ddslack-trace.format: json
+      aliyun.logs.catalina: stdout
+      aliyun.logs.datadeck-trace: /data/datadeck_slack/logs/trace-*.log
+      aliyun_logs_ddslack-uwsgi: /data/datadeck_slack/logs/uwsgi-*.log
+      io.rancher.container.hostname_override: container_name
+      aliyun.logs.ddslack-trace.tags: ”service=ddslack,env=prod“
+      io.rancher.container.pull_image: always
+  LB-slack-dev:
+    image: rancher/lb-service-haproxy:v0.9.1
+    ports:
+    - 5000:5000/tcp
+    labels:
+      io.rancher.scheduler.affinity:host_label: traefik_lb=true
+      io.rancher.container.agent.role: environmentAdmin,agent
+      io.rancher.container.agent_service.drain_provider: 'true'
+      io.rancher.container.create_agent: 'true'

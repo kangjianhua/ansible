@@ -1,0 +1,36 @@
+version: '2'
+services:
+  traefik:
+    image: rawmind/alpine-traefik:1.7.4-0
+    environment:
+      TRAEFIK_ADMIN_AUTH_METHOD: basic
+      TRAEFIK_ADMIN_AUTH_USERS: ''
+      TRAEFIK_ADMIN_ENABLE: 'true'
+      TRAEFIK_ADMIN_PORT: '8000'
+      TRAEFIK_ADMIN_SSL: 'false'
+      TRAEFIK_ADMIN_STATISTICS: '10'
+      TRAEFIK_CONSTRAINTS: ''
+      TRAEFIK_FILE_ENABLE: 'false'
+      TRAEFIK_HTTPS_COMPRESSION: 'true'
+      TRAEFIK_HTTPS_ENABLE: 'false'
+      TRAEFIK_HTTPS_PORT: '8443'
+      TRAEFIK_HTTP_COMPRESSION: 'true'
+      TRAEFIK_HTTP_PORT: '8080'
+      TRAEFIK_INSECURE_SKIP: 'false'
+      TRAEFIK_RANCHER_ENABLE: 'true'
+      TRAEFIK_RANCHER_HEALTHCHECK: 'false'
+      TRAEFIK_RANCHER_MODE: metadata
+      TRAEFIK_TIMEOUT_DIAL: '30'
+      TRAEFIK_TIMEOUT_HEADER: '0'
+      TRAEFIK_TIMEOUT_IDLE: '180'
+      TRAEFIK_TIMEOUT_READ: '0'
+      TRAEFIK_TIMEOUT_WRITE: '0'
+      TRAEFIK_USAGE_ENABLE: 'false'
+    ports:
+    - 8000:8000/tcp
+    - 8080:8080/tcp
+    labels:
+      io.rancher.scheduler.affinity:host_label: traefik_lb=true
+      io.rancher.container.hostname_override: container_name
+      aliyun.logs.traefik: stdout
+      io.rancher.scheduler.global: 'true'

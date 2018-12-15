@@ -1,0 +1,14 @@
+version: '2'
+services:
+  wwwptmindcojp:
+    mem_limit: 4294967296
+    image: reg.ptone.jp/web/master/www.ptmind.co.jp
+    environment:
+      TZ: Asia/Tokyo
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:www.ptmind.co.jp
+      traefik.port: '80'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+      traefik.sticky: 'true'

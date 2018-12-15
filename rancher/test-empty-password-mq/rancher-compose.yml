@@ -1,0 +1,19 @@
+version: '2'
+services:
+  rabbitmq-datavolume:
+    metadata:
+      rabbitmq: &id001
+        config:
+          node.name: $${HOSTNAME}
+    scale: 1
+    start_on_create: true
+  rabbitmq:
+    metadata:
+      rabbitmq: *id001
+    scale: 1
+    start_on_create: true
+  rabbitmq-base:
+    metadata:
+      rabbitmq: *id001
+    scale: 1
+    start_on_create: true

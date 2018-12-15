@@ -1,0 +1,13 @@
+version: '2'
+services:
+  ptes-apm:
+    mem_limit: 536870912
+    image: reg.ptone.jp/base/apm-server:6.4.0
+    hostname: pt-apm
+    stdin_open: true
+    tty: true
+    mem_reservation: 536870912
+    labels:
+      owner: jianhua.kang
+      io.rancher.scheduler.affinity:container_label_soft_ne: io.rancher.stack_service.name=pt-apm/ptes-apm
+      io.rancher.container.pull_image: always

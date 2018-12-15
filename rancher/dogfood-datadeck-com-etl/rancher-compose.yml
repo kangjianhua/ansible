@@ -1,0 +1,62 @@
+version: '2'
+services:
+  01-02-datadeck-gateway:
+    scale: 1
+    start_on_create: true
+  04-04-datadeck-modules-google-analytics:
+    scale: 1
+    start_on_create: true
+  04-07-datadeck-modules-upload-file:
+    scale: 1
+    start_on_create: true
+  02-02-datadeck-dataset-etl-dataset:
+    scale: 1
+    start_on_create: true
+  02-03-datadeck-dataset-etl-datasync:
+    scale: 1
+    start_on_create: true
+  02-05-datadeck-dataset-etl-user:
+    scale: 1
+    start_on_create: true
+  04-02-datadeck-modules-google-search-console:
+    scale: 1
+    start_on_create: true
+  03-01-datadeck-app-datasource:
+    scale: 1
+    start_on_create: true
+  04-03-datadeck-modules-facebookpages:
+    scale: 1
+    start_on_create: true
+  05-01-datadeck-app-business:
+    scale: 1
+    start_on_create: true
+  04-10-datadeck-modules-trello:
+    scale: 1
+    start_on_create: true
+  04-06-datadeck-modules-google-drive:
+    scale: 1
+    start_on_create: true
+  04-11-datadeck-modules-pinterest:
+    scale: 1
+    start_on_create: true
+  04-01-datadeck-modules-twitter-microblog:
+    scale: 1
+    start_on_create: true
+  01-01-datadeck-eureka:
+    scale: 2
+    start_on_create: true
+  04-09-datadeck-modules-paypal:
+    scale: 1
+    start_on_create: true
+  04-05-datadeck-modules-youtube:
+    scale: 1
+    start_on_create: true
+  04-08-datadeck-modules-linkedin:
+    scale: 1
+    start_on_create: true
+  05-02-datadeck-modules-hubspot:
+    scale: 1
+    start_on_create: true
+  centos:
+    scale: 1
+    start_on_create: true

@@ -1,0 +1,18 @@
+version: '2'
+services:
+  intercom-app-staging:
+    image: reg.ptone.jp/datadeck/intercom-app/staging/intercomapp
+    environment:
+      ENV: staging
+      TZ: Asia/Shanghai
+      START_AT: '4:11'
+      MOD: sync
+    stdin_open: true
+    external_links:
+    - dd-staging/dd-redis-cluster-staging:staging.redis.datadeck.com
+    volumes:
+    - /data
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      aliyun.logs.ptsyslog-dd-intercom-staging: /data/datadeck-intercom-statistics/syslog/*.log

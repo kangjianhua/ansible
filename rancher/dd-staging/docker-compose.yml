@@ -1,0 +1,234 @@
+version: '2'
+volumes:
+  zkconfig:
+    driver: local
+    per_container: true
+  zkdata:
+    driver: local
+    per_container: true
+services:
+  08-dd-permision-staging:
+    image: reg.ptone.jp/datadeck/datadeck-project/staging/permission
+    stdin_open: true
+    tty: true
+    links:
+    - dd-zookeeper-staging:staging.zk.datadeck.com
+    labels:
+      io.rancher.scheduler.affinity:host_label: env=dd
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  12-dd-log-staging:
+    image: reg.ptone.jp/datadeck/datadeck-project/staging/log
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    links:
+    - dd-zookeeper-staging:staging.zk.datadeck.com
+    labels:
+      traefik.frontend.rule: Host:staginglog.datadeck.com
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+      io.rancher.scheduler.affinity:host_label: env=dd
+      traefik.port: '8080'
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  07-dd-gather-staging:
+    mem_limit: 5242880000
+    image: reg.ptone.jp/datadeck/datadeck-project/staging/gather
+    environment:
+      JAVA_OPTS: -Xmx4g -Xms4g -XX:PermSize=128M -XX:MaxPermSize=256M  -XX:+UseParNewGC  -XX:TargetSurvivorRatio=80 -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=60 -XX:CMSFullGCsBeforeCompaction=1 -XX:+UseCMSCompactAtFullCollection
+    stdin_open: true
+    tty: true
+    links:
+    - dd-zookeeper-staging:staging.zk.datadeck.com
+    labels:
+      io.rancher.scheduler.affinity:host_label: env=dd
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  10-dd-provider-staging:
+    image: reg.ptone.jp/datadeck/datadeck-project/staging/provider
+    environment:
+      JAVA_OPTS: -Xmx4g -Xms4g -XX:PermSize=128M -XX:MaxPermSize=256M  -XX:+UseParNewGC  -XX:TargetSurvivorRatio=80 -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=60 -XX:CMSFullGCsBeforeCompaction=1 -XX:+UseCMSCompactAtFullCollection
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    links:
+    - dd-zookeeper-staging:staging.zk.datadeck.com
+    labels:
+      io.rancher.scheduler.affinity:host_label: env=dd
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  03-dd-dash-staging:
+    image: reg.ptone.jp/datadeck/datadeck-frontend/staging/datadeck-frontend-staging
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:staging.datadeck.com,staging.datadeck.jp
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+      io.rancher.scheduler.affinity:host_label: env=dd
+      traefik.port: '80'
+      io.rancher.container.pull_image: always
+  zk-volume:
+    image: rawmind/alpine-volume:0.0.2-1
+    environment:
+      SERVICE_GID: '10002'
+      SERVICE_UID: '10002'
+      SERVICE_VOLUME: /opt/zk/data
+    network_mode: none
+    volumes:
+    - zkdata:/opt/zk/data
+    labels:
+      io.rancher.container.start_once: 'true'
+      io.rancher.scheduler.affinity:container_label_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+      io.rancher.container.hostname_override: container_name
+  06-dd-rest-staging:
+    mem_limit: 5242880000
+    image: reg.ptone.jp/datadeck/datadeck-project/staging/rest
+    environment:
+      JAVA_OPTS: -Xmx4g -Xms4g -XX:PermSize=128M -XX:MaxPermSize=256M  -XX:+UseParNewGC  -XX:TargetSurvivorRatio=80 -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=60 -XX:CMSFullGCsBeforeCompaction=1 -XX:+UseCMSCompactAtFullCollection
+      TZ: Asia/Tokyo
+    stdin_open: true
+    external_links:
+    - dd-ds-staging/01-02-datadeck-app-dataset-gateway:gateway-dataset-etl.datadeck.com
+    volumes:
+    - /data/eslog/:/data/datadeck/logs/
+    tty: true
+    links:
+    - dd-zookeeper-staging:staging.zk.datadeck.com
+    labels:
+      traefik.frontend.rule: Host:stagingauth.datadeck.com
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+      io.rancher.scheduler.affinity:host_label: env=dd
+      traefik.port: '8080'
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label_ne: h=19
+  05-dd-middle-staging:
+    image: reg.ptone.jp/datadeck/datadeck-project/staging/middle
+    stdin_open: true
+    volumes:
+    - /data/datadeck
+    - /data/datadeck/eslog/middle
+    - /data/datadeck/syslog/middle/all
+    tty: true
+    links:
+    - dd-zookeeper-staging:staging.zk.datadeck.com
+    labels:
+      aliyun.logs.ptlog-dd-staging-event-middle: /data/datadeck/eslog/middle/event.*.log
+      owner: peng.xu
+      traefik.enable: 'true'
+      aliyun.logs.ptlog-dd-staging-trace-middle: /data/datadeck/middle/trace/*.log
+      traefik.port: '8080'
+      io.rancher.container.pull_image: always
+      aliyun.logs.ptlog-dd-staging-event-middle.format: json
+      io.rancher.scheduler.affinity:host_label_soft: env=dd
+      aliyun.logs.ptlog-dd-staging-trace-middle.format: json
+      traefik.frontend.rule: Host:stagingmiddle.datadeck.com
+      aliyun.logs.ptlog-dd-staging-trace-middle.tags: service=datadeck-middle,env=prod
+      traefik.sticky: 'true'
+  11-dd-adwords-staging:
+    mem_limit: 5242880000
+    image: reg.ptone.jp/datadeck/datadeck-project/staging/adwords
+    environment:
+      JAVA_OPTS: -Xmx4g -Xms4g -XX:PermSize=128M -XX:MaxPermSize=256M  -XX:+UseParNewGC  -XX:TargetSurvivorRatio=80 -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=60 -XX:CMSFullGCsBeforeCompaction=1 -XX:+UseCMSCompactAtFullCollection
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    mem_reservation: 5242880000
+    links:
+    - dd-zookeeper-staging:staging.zk.datadeck.com
+    labels:
+      io.rancher.scheduler.affinity:host_label: env=dd
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  09-dd-web-socket-staging:
+    image: reg.ptone.jp/datadeck/datadeck-project/staging/socket
+    stdin_open: true
+    tty: true
+    links:
+    - dd-zookeeper-staging:staging.zk.datadeck.com
+    labels:
+      traefik.frontend.rule: Host:stagingsocket.datadeck.com
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+      io.rancher.scheduler.affinity:host_label: env=dd
+      traefik.port: '8080'
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  dd-zookeeper-staging:
+    image: rawmind/alpine-zk:3.4.10-0
+    environment:
+      CONFD_INTERVAL: '60'
+      JVMFLAGS: -Xmx512m -Xms512m
+      ZK_DATA_DIR: /opt/zk/data
+      ZK_INIT_LIMIT: '10'
+      ZK_MAX_CLIENT_CXNS: '1000'
+      ZK_SYNC_LIMIT: '5'
+      ZK_TICK_TIME: '5000'
+    tty: true
+    volumes_from:
+    - zk-volume
+    - zk-conf
+    labels:
+      io.rancher.scheduler.affinity:container_label_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+      io.rancher.sidekicks: zk-conf,zk-volume
+      io.rancher.container.hostname_override: container_name
+  zk-conf:
+    image: rawmind/rancher-zk:3.4.9
+    network_mode: none
+    volumes:
+    - zkconfig:/opt/tools
+    labels:
+      io.rancher.container.start_once: 'true'
+      io.rancher.scheduler.affinity:container_label_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+      io.rancher.container.hostname_override: container_name
+  13-datadeck-app-business-staging:
+    image: reg.ptone.jp/datadeck/datadeck-app-business/staging/datadeck-app-business
+    environment:
+      TZ: Asia/Tokyo
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+    stdin_open: true
+    volumes:
+    - /data/eslog/:/data/datadeck/logs/
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: env=dd
+  dd-redis-cluster-staging:
+    image: registry.gitlab.com/ptminddev/public_registry/redis3.0
+    stdin_open: true
+    tty: true
+    command:
+    - setpasswd
+    - ptmind
+    labels:
+      io.rancher.scheduler.affinity:host_label: env=dd
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  02-dd-admin-staging:
+    image: registry.gitlab.com/ptminddev/datadeck/ptone-admin/staging/ptone-admin-staging
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:stagingadmin.datadeck.com
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+      io.rancher.scheduler.affinity:host_label: env=dd
+      traefik.port: '80'
+      io.rancher.container.pull_image: always
+  04-dd-redis-staging:
+    image: reg.ptone.jp/datadeck/datadeck-redis/staging/datadeck-redis-staging
+    stdin_open: true
+    tty: true
+    links:
+    - dd-redis-cluster-staging:staging.redis.datadeck.com
+    - dd-zookeeper-staging:staging.zk.datadeck.com
+    labels:
+      io.rancher.scheduler.affinity:host_label: env=dd
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always

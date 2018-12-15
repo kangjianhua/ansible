@@ -1,0 +1,133 @@
+version: '2'
+services:
+  mongos:
+    mem_limit: 536870912
+    image: mongo:4.0.1-xenial
+    stdin_open: true
+    network_mode: host
+    volumes:
+    - /data/mongos:/data/db
+    tty: true
+    mem_reservation: 268435456
+    command:
+    - mongos
+    - --configdb
+    - myset/172.19.9.11:27000,172.19.9.13:27000,172.19.9.13:27000
+    - --port
+    - '27017'
+    - --bind_ip_all
+    labels:
+      io.rancher.scheduler.affinity:host_label: mongos=true
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.global: 'true'
+  shard2:
+    mem_limit: 6442450944
+    image: mongo:4.0.1-xenial
+    stdin_open: true
+    network_mode: host
+    volumes:
+    - /data/shard2:/data/db
+    tty: true
+    mem_reservation: 2147483648
+    command:
+    - /usr/bin/mongod
+    - --shardsvr
+    - --replSet
+    - shard2
+    - --port
+    - '27002'
+    - --bind_ip_all
+    - --dbpath
+    - /data/db
+    - --logpath
+    - /data/db/shard2.log
+    - --oplogSize
+    - '10'
+    - --wiredTigerCacheSizeGB
+    - '3'
+    labels:
+      io.rancher.scheduler.affinity:host_label: shard2=true
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.global: 'true'
+  shard3:
+    mem_limit: 6442450944
+    image: mongo:4.0.1-xenial
+    stdin_open: true
+    network_mode: host
+    volumes:
+    - /data/shard3:/data/db
+    tty: true
+    mem_reservation: 2147483648
+    command:
+    - /usr/bin/mongod
+    - --shardsvr
+    - --replSet
+    - shard3
+    - --port
+    - '27003'
+    - --bind_ip_all
+    - --dbpath
+    - /data/db
+    - --logpath
+    - /data/db/shard3.log
+    - --oplogSize
+    - '10'
+    - --wiredTigerCacheSizeGB
+    - '3'
+    labels:
+      io.rancher.scheduler.affinity:host_label: shard3=true
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.global: 'true'
+  shard1:
+    mem_limit: 6442450944
+    image: mongo:4.0.1-xenial
+    stdin_open: true
+    network_mode: host
+    volumes:
+    - /data/shard1:/data/db
+    tty: true
+    mem_reservation: 2147483648
+    command:
+    - /usr/bin/mongod
+    - --shardsvr
+    - --replSet
+    - shard1
+    - --port
+    - '27001'
+    - --bind_ip_all
+    - --dbpath
+    - /data/db
+    - --logpath
+    - /data/db/shard1.log
+    - --oplogSize
+    - '10'
+    - --wiredTigerCacheSizeGB
+    - '3'
+    labels:
+      io.rancher.scheduler.affinity:host_label: shard1=true
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.global: 'true'
+  config:
+    mem_limit: 2147483648
+    image: mongo:4.0.1-xenial
+    stdin_open: true
+    network_mode: host
+    volumes:
+    - /data/config:/data/db
+    tty: true
+    command:
+    - /usr/bin/mongod
+    - --configsvr
+    - --replSet
+    - myset
+    - --bind_ip_all
+    - --dbpath
+    - /data/db
+    - --port
+    - '27000'
+    - --logpath
+    - /data/db/config.log
+    labels:
+      io.rancher.scheduler.affinity:host_label: config=true
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.global: 'true'

@@ -1,0 +1,15 @@
+version: '2'
+services:
+  notification:
+    image: reg.ptone.jp/datadeck/datadeck-subscription/staging/datadecksubscription
+    environment:
+      ENV: staging
+      TZ: Asia/Shanghai
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:stagingsub.datadeck.com
+      traefik.port: '8000'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+      traefik.sticky: 'true'

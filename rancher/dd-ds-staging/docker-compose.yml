@@ -1,0 +1,241 @@
+version: '2'
+services:
+  04-12-datadeck-modules-xero:
+    image: reg.ptone.jp/datadeck/datadeck-modules/staging/datadeck-modules-xero
+    environment:
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '2048'
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  04-13-datadeck-modules-intercom:
+    image: reg.ptone.jp/datadeck/datadeck-modules/staging/datadeck-modules-intercom
+    environment:
+      ENV: staging
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  04-06-datadeck-modules-one-drive:
+    image: reg.ptone.jp/datadeck/datadeck-modules/staging/datadeck-modules-one-drive
+    environment:
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+    stdin_open: true
+    external_links:
+    - dd-staging/dd-redis-cluster-staging:staging.redis.datadeck.com
+    - rabbitmq-3/rabbitmq:mqstaging.datadeck.com
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  02-04-datadeck-app-datasync:
+    image: reg.ptone.jp/datadeck/staging/datasync
+    environment:
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+      ENV: staging
+    stdin_open: true
+    external_links:
+    - rabbitmq-3/rabbitmq:mqstaging.datadeck.com
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  04-02-datadeck-modules-google-search-console:
+    image: reg.ptone.jp/datadeck/datadeck-modules/staging/datadeck-modules-google-search-console
+    environment:
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  04-03-datadeck-modules-twiiter-microblog:
+    image: reg.ptone.jp/datadeck/datadeck-modules/staging/datadeck-modules-twitter-microblog
+    environment:
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  04-04-datadeck-modules-uploadfile:
+    image: reg.ptone.jp/datadeck/datadeck-modules-uploadfile/staging/uploadfile
+    environment:
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+    stdin_open: true
+    external_links:
+    - rabbitmq-3/rabbitmq:mqstaging.datadeck.com
+    volumes:
+    - /data/datadeck/uploadfile/trace/
+    tty: true
+    labels:
+      aliyun.logs.ptlog-dd-trace-staging-uploadfile: /data/datadeck/uploadfile/trace/trace.json.log
+      aliyun.logs.ptlog-dd-trace-staging-uploadfile.tags: service=uploadfile,env=staging
+      io.rancher.container.pull_image: always
+      aliyun.logs.ptlog-dd-trace-staging-uploadfile.format: json
+  03-01-datadeck-app-datasource:
+    mem_limit: 2147483648
+    image: reg.ptone.jp/datadeck/datadeck-data-manage/staging/datadeck-app-datasource
+    environment:
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+    stdin_open: true
+    external_links:
+    - dd-staging/dd-redis-cluster-staging:staging.redis.datadeck.com
+    - rabbitmq-3/rabbitmq:mqstaging.datadeck.com
+    tty: true
+    mem_reservation: 2147483648
+    labels:
+      owner: xiaopeng.liu
+      io.rancher.scheduler.affinity:container_label_soft_ne: io.rancher.stack_service.name=dd-ds-staging/03-01-datadeck-app-datasource
+      aliyun.logs.ptlog-dd-trace-staging-datadeck-app-datasource.tags: service=datadeck-app-datasource,env=staging
+      aliyun.logs.ptlog-dd-trace-staging-datadeck-app-datasource: /data/datadeck/datadeck-app-datasource/trace/trace.json.log
+      io.rancher.container.pull_image: always
+      aliyun.logs.ptlog-dd-trace-staging-datadeck-app-datasource.format: json
+  04-11-datadeck-modules-paypal:
+    image: reg.ptone.jp/datadeck/datadeck-modules/staging/datadeck-modules-paypal
+    environment:
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '2048'
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  02-01-datadeck-app-dataset:
+    image: reg.ptone.jp/datadeck/staging/dataset
+    environment:
+      MIN_MEM: '4096'
+      MAX_MEM: '4096'
+      ENV: staging
+      TZ: Asia/Tokyo
+    stdin_open: true
+    external_links:
+    - dd-staging/dd-redis-cluster-staging:staging.redis.datadeck.com
+    - dd-staging/05-dd-middle-staging:stagingmiddle.datadeck.com
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  04-01-datadeck-modules-facebookpages:
+    image: reg.ptone.jp/datadeck/datadeck-modules/staging/datadeck-modules-facebookpages
+    environment:
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  01-02-datadeck-app-dataset-gateway:
+    image: reg.ptone.jp/datadeck/staging/gateway
+    environment:
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+      ENV: staging
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:stagingdsgateway.datadeck.com
+      traefik.port: '9020'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+      traefik.sticky: 'true'
+  04-07-datadeck-modules-amazons3:
+    image: reg.ptone.jp/datadeck/datadeck-modules/staging/datadeck-modules-amazons3
+    environment:
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '2048'
+    stdin_open: true
+    external_links:
+    - rabbitmq-3/rabbitmq:mqstaging.datadeck.com
+    - dd-staging/dd-redis-cluster-staging:staging.redis.datadeck.com
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  04-05-datadeck-modules-google-drive:
+    image: reg.ptone.jp/datadeck/datadeck-modules/staging/datadeck-modules-google-drive
+    environment:
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+    stdin_open: true
+    external_links:
+    - rabbitmq-3/rabbitmq:mqstaging.datadeck.com
+    - dd-staging/dd-redis-cluster-staging:staging.redis.datadeck.com
+    volumes:
+    - /data/datadeck/google-drive/trace/
+    tty: true
+    labels:
+      aliyun.logs.ptlog-dd-trace-staging-google-drive.tags: service=google-drive,env=staging
+      aliyun.logs.ptlog-dd-trace-staging-google-drive: /data/datadeck/staging/trace/trace.json.log
+      io.rancher.container.pull_image: always
+      aliyun.logs.ptlog-dd-trace-staging-google-drive.format: json
+  04-08-datadeck-modules-trello:
+    image: reg.ptone.jp/datadeck/datadeck-modules/staging/datadeck-module-trello
+    environment:
+      ENV: staging
+      TRELLO_API_KEY: 85ea6e92cc25ee53db2eade832a48eaf
+      TRELLO_API_SECRET: a576d2d7b31ca77dc3dee0402297bca85826e0fa8d74e28cae835ff696844e2c
+    stdin_open: true
+    volumes:
+    - /data/datadeck/trello/trace/
+    tty: true
+    labels:
+      aliyun.logs.ptlog-dd-trace-staging-trello: /data/datadeck/trello/trace/*.json.log
+      aliyun.logs.ptlog-dd-trace-staging-trello.tags: service=trello,env=staging
+      io.rancher.container.pull_image: always
+      aliyun.logs.ptlog-dd-trace-staging-trello.format: json
+  01-01-datadeck-app-dataset-eureka:
+    image: reg.ptone.jp/datadeck/staging/eureka
+    environment:
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+      ENV: staging
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:stagingdseureka.datadeck.com
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+      traefik.port: '9010'
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  04-10-datadeck-modules-linkedin:
+    image: reg.ptone.jp/datadeck/datadeck-modules/staging/datadeck-modules-linkedin
+    environment:
+      ENV: staging
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  04-09-datadeck-modules-youtube:
+    image: reg.ptone.jp/datadeck/datadeck-modules/staging/datadeck-modules-youtube
+    environment:
+      ENV: staging
+      MIN_MEM: '1024'
+      MAX_MEM: '2048'
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  02-03-datadeck-app-dataset-user:
+    image: reg.ptone.jp/datadeck/staging/user
+    environment:
+      MIN_MEM: '1024'
+      MAX_MEM: '1024'
+      ENV: staging
+    stdin_open: true
+    external_links:
+    - dd-staging/05-dd-middle-staging:stagingmiddle.datadeck.com
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always

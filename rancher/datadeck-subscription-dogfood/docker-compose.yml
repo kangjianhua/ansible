@@ -1,0 +1,16 @@
+version: '2'
+services:
+  notification:
+    image: reg.ptone.jp/datadeck/datadeck-subscription/dogfood/datadecksubscription
+    environment:
+      ENV: dogfood
+      TZ: Asia/Shanghai
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:dogfoodsub.datadeck.com
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+      io.rancher.scheduler.affinity:host_label: env=dd
+      traefik.port: '8000'
+      io.rancher.container.pull_image: always

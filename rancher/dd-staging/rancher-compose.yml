@@ -1,0 +1,183 @@
+version: '2'
+services:
+  08-dd-permision-staging:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 8080
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      strategy: recreateOnQuorum
+      reinitializing_timeout: 60000
+  12-dd-log-staging:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 10000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 8080
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 10000
+      strategy: recreateOnQuorum
+      reinitializing_timeout: 60000
+  07-dd-gather-staging:
+    scale: 1
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 11000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 8080
+      unhealthy_threshold: 3
+      initializing_timeout: 180000
+      interval: 5000
+      strategy: recreateOnQuorum
+      reinitializing_timeout: 180000
+  10-dd-provider-staging:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 10000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 8080
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 10000
+      strategy: recreateOnQuorum
+      reinitializing_timeout: 60000
+  03-dd-dash-staging:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 11000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 80
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 5000
+      strategy: recreateOnQuorum
+      request_line: GET "/" "HTTP/1.0"
+      reinitializing_timeout: 60000
+  zk-volume:
+    retain_ip: true
+    scale: 3
+    start_on_create: true
+  06-dd-rest-staging:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 10000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 8080
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 10000
+      strategy: recreateOnQuorum
+      reinitializing_timeout: 60000
+  05-dd-middle-staging:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 8080
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 120000
+      strategy: recreateOnQuorum
+      reinitializing_timeout: 60000
+  11-dd-adwords-staging:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 8080
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 12000
+      strategy: recreateOnQuorum
+      reinitializing_timeout: 60000
+  09-dd-web-socket-staging:
+    scale: 2
+    start_on_create: true
+  dd-zookeeper-staging:
+    retain_ip: true
+    scale: 3
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 5000
+      port: 2181
+      unhealthy_threshold: 3
+      interval: 5000
+      strategy: recreate
+  zk-conf:
+    retain_ip: true
+    scale: 3
+    start_on_create: true
+  13-datadeck-app-business-staging:
+    scale: 2
+    start_on_create: true
+  dd-redis-cluster-staging:
+    scale: 1
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 6379
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      strategy: recreateOnQuorum
+      reinitializing_timeout: 60000
+  02-dd-admin-staging:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 11000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 80
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 5000
+      strategy: recreateOnQuorum
+      request_line: GET "/" "HTTP/1.0"
+      reinitializing_timeout: 60000
+  04-dd-redis-staging:
+    scale: 1
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 11000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 8080
+      unhealthy_threshold: 3
+      initializing_timeout: 180000
+      interval: 5000
+      strategy: recreateOnQuorum
+      reinitializing_timeout: 180000

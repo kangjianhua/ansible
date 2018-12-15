@@ -1,0 +1,13 @@
+version: '2'
+services:
+  webpage:
+    mem_limit: 4294967296
+    image: reg.ptone.jp/web/datadeck-site/jpdevelop/datadeck-site-jp
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:wwwtest.datadeck.jp
+      traefik.port: '80'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+      traefik.sticky: 'true'

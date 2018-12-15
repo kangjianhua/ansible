@@ -1,0 +1,12 @@
+version: '2'
+services:
+  mongos:
+    start_on_create: true
+  shard2:
+    start_on_create: true
+  shard3:
+    start_on_create: true
+  shard1:
+    start_on_create: true
+  config:
+    start_on_create: true

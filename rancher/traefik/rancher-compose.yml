@@ -1,0 +1,12 @@
+version: '2'
+services:
+  traefik:
+    retain_ip: true
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 5000
+      port: 8000
+      unhealthy_threshold: 3
+      interval: 5000
+      strategy: recreate

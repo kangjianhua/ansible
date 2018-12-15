@@ -1,0 +1,15 @@
+version: '2'
+services:
+  wwwptenginecom:
+    mem_limit: 4294967296
+    image: reg.ptone.jp/web/ptengine/develop/www.ptengine.com
+    environment:
+      TZ: Asia/Shanghai
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:wwwtest.ptengine.com
+      traefik.port: '80'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+      traefik.sticky: 'true'

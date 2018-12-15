@@ -1,0 +1,201 @@
+version: '2'
+services:
+  04-12-datadeck-modules-xero:
+    scale: 1
+    start_on_create: true
+  04-13-datadeck-modules-intercom:
+    scale: 1
+    start_on_create: true
+  04-06-datadeck-modules-one-drive:
+    scale: 2
+    start_on_create: true
+  02-04-datadeck-app-datasync:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 9050
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      strategy: recreateOnQuorum
+      request_line: GET "/health" "HTTP/1.0"
+      reinitializing_timeout: 60000
+  04-02-datadeck-modules-google-search-console:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 8888
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      strategy: recreateOnQuorum
+      request_line: GET "/health" "HTTP/1.0"
+      reinitializing_timeout: 60000
+  04-03-datadeck-modules-twiiter-microblog:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 8888
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      strategy: recreateOnQuorum
+      request_line: GET "/health" "HTTP/1.0"
+      reinitializing_timeout: 60000
+  04-04-datadeck-modules-uploadfile:
+    scale: 1
+    start_on_create: true
+  03-01-datadeck-app-datasource:
+    scale: 1
+    start_on_create: true
+  04-11-datadeck-modules-paypal:
+    scale: 1
+    start_on_create: true
+  02-01-datadeck-app-dataset:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 9040
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      strategy: recreateOnQuorum
+      request_line: GET "/health" "HTTP/1.0"
+      reinitializing_timeout: 60000
+  04-01-datadeck-modules-facebookpages:
+    scale: 1
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 8888
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      strategy: recreateOnQuorum
+      request_line: GET "/health" "HTTP/1.0"
+      reinitializing_timeout: 60000
+  01-02-datadeck-app-dataset-gateway:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      port: 9020
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      strategy: none
+      request_line: GET "/health" "HTTP/1.0"
+      reinitializing_timeout: 60000
+  04-07-datadeck-modules-amazons3:
+    scale: 1
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 9093
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      strategy: recreateOnQuorum
+      request_line: GET "/health" "HTTP/1.0"
+      reinitializing_timeout: 60000
+  04-05-datadeck-modules-google-drive:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 9091
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      strategy: recreateOnQuorum
+      request_line: GET "/health" "HTTP/1.0"
+      reinitializing_timeout: 60000
+  04-08-datadeck-modules-trello:
+    scale: 1
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 80
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 300000
+      strategy: recreateOnQuorum
+      request_line: GET "/initAuth" "HTTP/1.0"
+      reinitializing_timeout: 60000
+  01-01-datadeck-app-dataset-eureka:
+    scale: 2
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 9010
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      strategy: recreateOnQuorum
+      request_line: GET "/health" "HTTP/1.0"
+      reinitializing_timeout: 60000
+  04-10-datadeck-modules-linkedin:
+    scale: 1
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 8081
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      strategy: recreateOnQuorum
+      request_line: GET "/health" "HTTP/1.0"
+      reinitializing_timeout: 60000
+  04-09-datadeck-modules-youtube:
+    scale: 1
+    start_on_create: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      recreate_on_quorum_strategy_config:
+        quorum: 1
+      port: 8888
+      unhealthy_threshold: 3
+      initializing_timeout: 60000
+      interval: 2000
+      strategy: recreateOnQuorum
+      request_line: GET "/info" "HTTP/1.0"
+      reinitializing_timeout: 60000
+  02-03-datadeck-app-dataset-user:
+    scale: 2
+    start_on_create: true

@@ -1,0 +1,54 @@
+version: '2'
+volumes:
+  rabbitconf:
+    driver: local
+    per_container: true
+  rancherbin:
+    driver: local
+    per_container: true
+services:
+  rabbitmq-datavolume:
+    image: rabbitmq:3.6-management-alpine
+    entrypoint:
+    - /bin/true
+    network_mode: none
+    volumes:
+    - rabbitconf:/etc/rabbitmq
+    - rancherbin:/opt/rancher/bin
+    labels:
+      io.rancher.scheduler.affinity:host_label: rabbitmq=true
+      io.rancher.container.start_once: 'true'
+      io.rancher.scheduler.affinity:container_label_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+      io.rancher.container.hostname_override: container_name
+  rabbitmq:
+    image: webhostingcoopteam/rabbitmq-conf:0.2.1
+    environment:
+      CONFD_ARGS: --interval 5
+      RABBITMQ_CLUSTER_PARTITION_HANDLING: autoheal
+      RABBITMQ_NET_TICKTIME: '60'
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
+    volumes_from:
+    - rabbitmq-datavolume
+    labels:
+      traefik.frontend.rule: Host:stagingmq.datadeck.com,dogfoodmq.datadeck.com
+      io.rancher.scheduler.affinity:container_label_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+      io.rancher.sidekicks: rabbitmq-base,rabbitmq-datavolume
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+      io.rancher.scheduler.affinity:host_label: rabbitmq=true
+      traefik.port: '15672'
+      io.rancher.container.hostname_override: container_name
+  rabbitmq-base:
+    image: rabbitmq:3.6-management-alpine
+    environment:
+      RABBITMQ_ERLANG_COOKIE: defaultcookie
+    entrypoint:
+    - /opt/rancher/bin/run.sh
+    network_mode: container:rabbitmq
+    volumes_from:
+    - rabbitmq-datavolume
+    labels:
+      io.rancher.scheduler.affinity:host_label: rabbitmq=true
+      io.rancher.scheduler.affinity:container_label_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+      io.rancher.container.hostname_override: container_name

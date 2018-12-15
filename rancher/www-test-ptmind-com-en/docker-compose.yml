@@ -1,0 +1,29 @@
+version: '2'
+services:
+  redis-test:
+    mem_limit: 1073741824
+    image: registry.gitlab.com/ptminddev/public_registry/redis3.0
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    mem_reservation: 1073741824
+    command:
+    - setpasswd
+    - ptmind2016
+    labels:
+      io.rancher.container.pull_image: always
+  wwwptmindcom:
+    mem_limit: 4294967296
+    image: reg.ptone.jp/web/ptmind-site/cndevelop/ptmind-site-cn
+    environment:
+      TZ: Asia/Shanghai
+    tty: true
+    links:
+    - redis-test:redisonline.ptmind.com
+    labels:
+      traefik.frontend.rule: Host:wwwtesten.ptmind.com
+      traefik.port: '80'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+      traefik.sticky: 'true'

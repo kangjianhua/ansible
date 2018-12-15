@@ -1,0 +1,269 @@
+version: '2'
+volumes:
+  zkconfig:
+    driver: local
+    per_container: true
+  zkdata:
+    driver: local
+    per_container: true
+services:
+  11-dd-adwords-dogfood:
+    mem_limit: 5242880000
+    image: reg.ptone.jp/datadeck/datadeck-project/dogfood/adwords
+    environment:
+      JAVA_OPTS: -Xmx4g -Xms4g -XX:PermSize=128M -XX:MaxPermSize=256M  -XX:+UseParNewGC  -XX:TargetSurvivorRatio=80 -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=60 -XX:CMSFullGCsBeforeCompaction=1 -XX:+UseCMSCompactAtFullCollection
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    links:
+    - dd-zookeeper-dogfood:dogfood.zk.datadeck.com
+    labels:
+      io.rancher.scheduler.affinity:host_label: env=dd
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  09-dd-web-socket-dogfood:
+    mem_limit: 4294967296
+    image: reg.ptone.jp/datadeck/datadeck-project/dogfood/socket
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    links:
+    - dd-zookeeper-dogfood:dogfood.zk.datadeck.com
+    labels:
+      traefik.frontend.rule: Host:dogfoodsocket.datadeck.com
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+      io.rancher.scheduler.affinity:host_label: env=dd
+      traefik.port: '8080'
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  Rabbitmq-dogfood:
+    image: reg.ptone.jp/base/rabbitmq:3.7.4-rc.4
+    environment:
+      RABBITMQ_DEFAULT_PASS: admin123
+      RABBITMQ_DEFAULT_USER: admin
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    ports:
+    - 5672:5672/tcp
+    - 15672:15672/tcp
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: mq=dogfood
+  02-dd-admin-dogfood:
+    mem_limit: 1073741824
+    image: reg.ptone.jp/datadeck/ptone-admin/dogfood/ptone-admin-dogfood
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.scheduler.affinity:host_label: env=dd
+      traefik.frontend.rule: Host:dogfoodadmin.datadeck.com
+      traefik.port: '80'
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+  dd-redis-cluster-dogfood:
+    image: reg.ptone.jp/base/redis3.0
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    command:
+    - setpasswd
+    - ptmind
+    labels:
+      io.rancher.scheduler.affinity:host_label: env=dd
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  dd-zookeeper-dogfood:
+    image: rawmind/alpine-zk:3.4.10-0
+    environment:
+      CONFD_INTERVAL: '60'
+      JVMFLAGS: -Xmx512m -Xms512m
+      TZ: Asia/Tokyo
+      ZK_DATA_DIR: /opt/zk/data
+      ZK_INIT_LIMIT: '10'
+      ZK_MAX_CLIENT_CXNS: '1000'
+      ZK_SYNC_LIMIT: '5'
+      ZK_TICK_TIME: '5000'
+    tty: true
+    volumes_from:
+    - zk-conf
+    - zk-volume
+    labels:
+      io.rancher.sidekicks: zk-conf,zk-volume
+      io.rancher.container.hostname_override: container_name
+      io.rancher.scheduler.affinity:host_label_soft_ne: env=dd
+  zk-volume:
+    image: rawmind/alpine-volume:0.0.2-1
+    environment:
+      SERVICE_GID: '10002'
+      SERVICE_UID: '10002'
+      SERVICE_VOLUME: /opt/zk/data
+    network_mode: none
+    volumes:
+    - zkdata:/opt/zk/data
+    labels:
+      io.rancher.container.start_once: 'true'
+      io.rancher.scheduler.affinity:container_label_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+      io.rancher.container.hostname_override: container_name
+  07-dd-gather-dogfood:
+    mem_limit: 5242880000
+    image: reg.ptone.jp/datadeck/datadeck-project/dogfood/gather
+    environment:
+      JAVA_OPTS: -Xmx8g -Xms4g -XX:PermSize=128M -XX:MaxPermSize=256M  -XX:+UseParNewGC  -XX:TargetSurvivorRatio=80 -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=60 -XX:CMSFullGCsBeforeCompaction=1 -XX:+UseCMSCompactAtFullCollection
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    links:
+    - dd-zookeeper-dogfood:dogfood.zk.datadeck.com
+    labels:
+      io.rancher.scheduler.affinity:host_label: env=dd
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  04-dd-redis-dogfood:
+    mem_limit: 1073741824
+    image: reg.ptone.jp/datadeck/datadeck-redis/dogfood/datadeck-redis-dogfood
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    links:
+    - dd-zookeeper-dogfood:dogfood.zk.datadeck.com
+    - dd-redis-cluster-dogfood:dogfood.redis.datadeck.com
+    labels:
+      io.rancher.container.pull_image: always
+  08-dd-permision-dogfood:
+    mem_limit: 5242880000
+    image: reg.ptone.jp/datadeck/datadeck-project/dogfood/permission
+    environment:
+      JAVA_OPTS: -Xmx4g -Xms4g -XX:PermSize=128M -XX:MaxPermSize=256M  -XX:+UseParNewGC  -XX:TargetSurvivorRatio=80 -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=60 -XX:CMSFullGCsBeforeCompaction=1 -XX:+UseCMSCompactAtFullCollection
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    links:
+    - dd-zookeeper-dogfood:dogfood.zk.datadeck.com
+    labels:
+      io.rancher.scheduler.affinity:host_label: env=dd
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  05-dd-middle-dogfood:
+    mem_limit: 5347737600
+    image: reg.ptone.jp/datadeck/datadeck-project/dogfood/middle
+    environment:
+      JAVA_OPTS: -Xmx4g -Xms4g -XX:PermSize=128M -XX:MaxPermSize=256M  -XX:+UseParNewGC  -XX:TargetSurvivorRatio=80 -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=60 -XX:CMSFullGCsBeforeCompaction=1 -XX:+UseCMSCompactAtFullCollection
+      TZ: Asia/Tokyo
+    stdin_open: true
+    volumes:
+    - /data/datadeck/eslog/middle/
+    - /data/datadeck/syslog/middle/all
+    tty: true
+    mem_reservation: 5347737600
+    links:
+    - dd-zookeeper-dogfood:dogfood.zk.datadeck.com
+    labels:
+      aliyun.logs.dd-dogfood-syslog.tags: service= middle,env=dogfood
+      aliyun.logs.dd-dogfood-syslog: /data/datadeck/syslog/middle/all/*.log
+      traefik.enable: 'true'
+      aliyun.logs.nginx-access.format.pattern: '"^\\[(?<time>\\d{1,4}-\\d{1,2}-\\d{1,2}
+        \\d{1,2}:\\d{1,2}:\\d{1,2},\\d{1,4})\\] \\[(?<thread>.*)\\] \\[(?<level>[^\\s]+)\\]
+        (?<class>[^\\s]+) (?<message>.*)$$"'
+      aliyun.logs.ptlog-dd-dogfood-trace: /data/datadeck/eslog/middle/trace.*.log
+      aliyun.logs.catalina: stdout
+      traefik.port: '8080'
+      aliyun.logs.dd-dogfood-syslog.format: regexp
+      io.rancher.container.pull_image: always
+      aliyun.logs.ptlog-dd-dogfood-event: /data/datadeck/eslog/middle/event.*.log
+      aliyun.logs.ptlog-dd-dogfood-event.tags: service=middle,env=dogfood
+      traefik.frontend.rule: Host:dogfoodmiddle.datadeck.com
+      aliyun.logs.ptlog-dd-dogfood-trace.tags: service=middle,env=dogfood
+      io.rancher.scheduler.affinity:host_label: env=dd
+      aliyun.logs.ptlog-dd-dogfood-trace.format: json
+      aliyun.logs.ptlog-dd-dogfood-event.format: json
+  12-dd-log-dogfood:
+    mem_limit: 1073741824
+    image: reg.ptone.jp/datadeck/datadeck-project/dogfood/log
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    links:
+    - dd-zookeeper-dogfood:dogfood.zk.datadeck.com
+    labels:
+      traefik.frontend.rule: Host:dogfoodlog.datadeck.com
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+      io.rancher.scheduler.affinity:host_label: env=dd
+      traefik.port: '8080'
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  03-dd-dash-dogfood:
+    mem_limit: 1073741824
+    image: reg.ptone.jp/datadeck/datadeck-frontend/dogfood/dashv2
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:dogfood.datadeck.com
+      traefik.port: '80'
+      traefik.enable: 'true'
+      io.rancher.container.pull_image: always
+  06-dd-rest-dogfood:
+    mem_limit: 5242880000
+    image: reg.ptone.jp/datadeck/datadeck-project/dogfood/rest
+    environment:
+      JAVA_OPTS: -Xmx4g -Xms4g -XX:PermSize=128M -XX:MaxPermSize=256M  -XX:+UseParNewGC  -XX:TargetSurvivorRatio=80 -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=60 -XX:CMSFullGCsBeforeCompaction=1 -XX:+UseCMSCompactAtFullCollection
+      TZ: Asia/Tokyo
+    stdin_open: true
+    external_links:
+    - dogfood-datadeck-com-etl/01-02-datadeck-gateway:gateway-dataset-etl.datadeck.com
+    tty: true
+    links:
+    - dd-zookeeper-dogfood:dogfood.zk.datadeck.com
+    labels:
+      traefik.frontend.rule: Host:dogfoodauth.datadeck.com,testauth.ptone.jp
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+      io.rancher.scheduler.affinity:host_label: env=dd
+      traefik.port: '8080'
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  zk-conf:
+    image: rawmind/rancher-zk:3.4.9
+    network_mode: none
+    volumes:
+    - zkconfig:/opt/tools
+    labels:
+      io.rancher.container.start_once: 'true'
+      io.rancher.scheduler.affinity:container_label_soft_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+      io.rancher.container.hostname_override: container_name
+  13-dd-mobile-dogfood:
+    image: reg.ptone.jp/datadeck/datadeck-mobile/release/datadeck-mobile
+    environment:
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    labels:
+      traefik.frontend.rule: Host:testmobile.datadeck.com
+      traefik.enable: 'true'
+      traefik.sticky: 'true'
+      io.rancher.scheduler.affinity:host_label: env=dd
+      traefik.port: '80'
+      io.rancher.container.pull_image: always
+  10-dd-provider-dogfood:
+    image: reg.ptone.jp/datadeck/datadeck-project/dogfood/provider
+    environment:
+      JAVA_OPTS: -Xmx4g -Xms4g -XX:PermSize=128M -XX:MaxPermSize=256M  -XX:+UseParNewGC  -XX:TargetSurvivorRatio=80 -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=60 -XX:CMSFullGCsBeforeCompaction=1 -XX:+UseCMSCompactAtFullCollection
+      TZ: Asia/Tokyo
+    stdin_open: true
+    tty: true
+    links:
+    - dd-zookeeper-dogfood:dogfood.zk.datadeck.com
+    labels:
+      io.rancher.scheduler.affinity:host_label: env=dd
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
