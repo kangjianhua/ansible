@@ -1,0 +1,486 @@
+---
+# Also remember that all examples have 'disable_action' set to True.  If you
+# want to use this action as a template, be sure to set this to False after
+actions:
+  1:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-facebookpages-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-facebookpages-2018.11.
+  2:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-facebookpages-2018.11.
+
+############## ptlog-dd-trace-prod-datadeck-app-datasource ######
+  3:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-datadeck-app-datasource-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-datadeck-app-datasource-2018.11.
+  4:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-datadeck-app-datasource-2018.11.
+############## ptlog-dd-trace-prod-trello-2018.11 ####################
+  5:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-trello-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-trello-2018.11.
+  6:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-trello-2018.11.
+
+############## ptlog-dd-trace-prod-provider-2018.11 ####################
+  7:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-provider-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-provider-2018.11.
+  8:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-provider-2018.11.
+############## ptlog-dd-trace-prod-amazons3-2018.11 ####################
+  9:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-amazons3-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-amazons3-2018.11.
+  10:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-amazons3-2018.11.
+############## ptlog-dd-trace-prod-uploadfile-2018.11 ####################
+  11:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-uploadfile-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-uploadfile-2018.11.
+  12:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-uploadfile-2018.11.
+############## ptlog-dd-trace-prod-gather-2018.11####################
+  13:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-gather-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-gather-2018.11.
+  14:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-gather-2018.11.
+############## ptlog-dd-trace-prod-middle-2018.11 ####################
+  15:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-middle-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-middle-2018.11.
+  16:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-middle-2018.11.
+############## ptlog-dd-trace-prod-adwords-2018.11 ####################
+  17:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-adwords-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-adwords-2018.11.
+  18:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-adwords-2018.11.
+############## ptlog-dd-trace-prod-rest-2018.11 ####################
+  19:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-rest-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-rest-2018.11.
+  20:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-rest-2018.11.
+############## ptlog-dd-trace-prod-google-search-console-2018.11 ####################
+  21:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-google-search-console-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-google-search-console-2018.11.
+  22:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-google-search-console-2018.11.
+############## ptlog-dd-trace-prod-permission-2018.11 ####################
+  21:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-permission-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-permission-2018.11.
+  22:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-permission-2018.11.
+############## ptlog-dd-trace-prod-app-discovery-2018.11 ####################
+  23:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-app-discovery-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-app-discovery-2018.11.
+  24:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-app-discovery-2018.11.
+############## ptlog-dd-trace-prod-app-datasync-2018.11 ####################
+  25:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-app-datasync-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-app-datasync-2018.11.
+  26:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-app-datasync-2018.11.
+############## ptlog-dd-trace-prod-google-drive-2018.11 ####################
+  27:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-google-drive-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-google-drive-2018.11.
+  28:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-google-drive-2018.11.
+############## ptlog-dd-trace-prod-websocket-2018.11 ####################
+  29:
+    description: >-
+       Reindex 11月份每天生成的index数据到 ptlog-$name-2018.11
+    action: reindex
+    options:
+      disable_action: False
+      wait_interval: 9
+      max_wait: -1
+      request_body:
+        source:
+          index: REINDEX_SELECTION
+        dest:
+          index: ptlog-dd-trace-prod-websocket-2018.11
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: ptlog-dd-trace-prod-websocket-2018.11.
+  30:
+    action: delete_indices
+    description: >-
+       删除已经完成合并的索引
+    options:
+      ignore_empty_list: True
+      disable_action: False
+    filters:
+    - filtertype: pattern
+#      source: name
+      kind: prefix
+      value: ptlog-dd-trace-prod-websocket-2018.11.
+
