@@ -19,7 +19,7 @@ today=`date +%e`
 curator_cli show_indices |grep ptlog|grep "$month" > "$tmp"
 
 indexs=`awk -F"-$(date +%Y)" '{print $1}' "$tmp" |sort|uniq`
-#indexs=ptlog-dd-trace-prod-amazons3
+#indexs=ptlog-pte-ptservice
 for index in `echo $indexs`;do
 	wc=`grep "$index"-"$month" $tmp|wc -l`
 	if [ $wc -gt 1 ];then

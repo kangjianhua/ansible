@@ -18,7 +18,7 @@ actions:
     filters:
     - filtertype: pattern
       kind: prefix
-      value: ptlog-dd-trace-prod-app-discovery-2018.12.19
+      value: ptlog-dd-trace-prod-app-discovery-2018.12.27
   2:
     action: delete_indices
     description: >-
@@ -30,4 +30,4 @@ actions:
     - filtertype: pattern
 #      source: name
       kind: prefix
-      value: ptlog-dd-trace-prod-app-discovery-2018.12.19
+      value: ptlog-dd-trace-prod-app-discovery-2018.12.27
