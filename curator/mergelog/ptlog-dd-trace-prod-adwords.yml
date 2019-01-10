@@ -4,7 +4,7 @@
 actions:
   1:
     description: >-
-       Reindex all ptlog-dd-trace-prod-adwords-2018.12 索引到 ptlog-dd-trace-prod-adwords-2018.12.*
+       Reindex all ptlog-dd-trace-prod-adwords-2019.01 索引到 ptlog-dd-trace-prod-adwords-2019.01.*
     action: reindex
     options:
       disable_action: False
@@ -14,11 +14,11 @@ actions:
         source:
           index: REINDEX_SELECTION
         dest:
-          index: ptlog-dd-trace-prod-adwords-2018.12
+          index: ptlog-dd-trace-prod-adwords-2019.01
     filters:
     - filtertype: pattern
       kind: prefix
-      value: ptlog-dd-trace-prod-adwords-2018.12.27
+      value: ptlog-dd-trace-prod-adwords-2019.01.07
   2:
     action: delete_indices
     description: >-
@@ -30,4 +30,4 @@ actions:
     - filtertype: pattern
 #      source: name
       kind: prefix
-      value: ptlog-dd-trace-prod-adwords-2018.12.27
+      value: ptlog-dd-trace-prod-adwords-2019.01.07

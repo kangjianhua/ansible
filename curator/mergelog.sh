@@ -2,6 +2,8 @@
 #IFS=$'\n'
 #OLDIFS="$IFS"
 
+label=ptlog
+
 home=/workspace/ansible/curator
 
 #总的index日志信息
@@ -16,10 +18,10 @@ month=`date  +%Y.%m`
 #不合并当天日志
 today=`date +%e`
 #获取index日志列表
-curator_cli show_indices |grep ptlog|grep "$month" > "$tmp"
+curator_cli show_indices |grep "$label"|grep "$month" > "$tmp"
 
-indexs=`awk -F"-$(date +%Y)" '{print $1}' "$tmp" |sort|uniq`
-#indexs=ptlog-pte-ptservice
+#indexs=`awk -F"-$(date +%Y)" '{print $1}' "$tmp" |sort|uniq`
+indexs=warehouse-dd
 for index in `echo $indexs`;do
 	wc=`grep "$index"-"$month" $tmp|wc -l`
 	if [ $wc -gt 1 ];then
