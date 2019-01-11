@@ -1,0 +1,8 @@
+---
+- hosts: jpzstack
+  remote_user: root
+  tasks:
+  - name:  copy team.sh
+    copy: src=/workspace/ansible/zstack/config/team.sh dest=/workspace/team.sh mode=0755  owner=root group=root
+  - name: copy resolv
+    copy: src=/workspace/ansible/zstack/config/resolv.conf dest=/etc/resolv.conf mode=0755  owner=root group=root
