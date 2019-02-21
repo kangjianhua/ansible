@@ -52,9 +52,17 @@
   with_items:
      - {src: '/workspace/ansible/k8s/roles/etcd/templates/etcd.conf.j2' , dest: '/k8s/etcd/cfg/etcd.conf'}
      - {src: '/workspace/ansible/k8s/roles/etcd/templates/etcd.service.j2' , dest: '/usr/lib/systemd/system/etcd.service'}
+     - {src: '/workspace/ansible/k8s/roles/etcd/templates/check.sh.j2' , dest: '/k8s/etcd/bin/check.sh'}
 
-- name: 暂停5m
-  shell: sleep 5
+#- name: 暂停150s
+#  shell: systemctl daemon-reload && systemctl enable etcd && sleep 15 &&  systemctl start etcd 
 
 - name: 设置ectd 自启动
   service: name=etcd  state=started enabled=yes  daemon_reload=yes
+
+- name: 检查集群状态
+  shell: sh /k8s/etcd/bin/check.sh
+  register: output
+  
+- name: 打印集群检查结果信息 
+  debug: var=output.stdout_lines

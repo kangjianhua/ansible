@@ -1,0 +1,10 @@
+#!/bin/bash
+echo #cluster-health
+/k8s/etcd/bin/etcdctl --ca-file=/k8s/etcd/ssl/ca.pem --cert-file=/k8s/etcd/ssl/server.pem --key-file=/k8s/etcd/ssl/server-key.pem --endpoints="https://{{ ansible_default_ipv4.address }}:2379" cluster-health
+
+echo --
+echo ============================================================================================================
+echo --
+
+echo #cluster member
+/k8s/etcd/bin/etcdctl --ca-file=/k8s/etcd/ssl/ca.pem --cert-file=/k8s/etcd/ssl/server.pem --key-file=/k8s/etcd/ssl/server-key.pem --endpoints="https://{{ ansible_default_ipv4.address }}:2379" member list

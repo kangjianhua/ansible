@@ -7,7 +7,7 @@ ETCD_LISTEN_CLIENT_URLS="https://{{ ansible_default_ipv4.address }}:2379"
 #[Clustering]
 ETCD_INITIAL_ADVERTISE_PEER_URLS="https://{{ ansible_default_ipv4.address }}:2380"
 ETCD_ADVERTISE_CLIENT_URLS="https://{{ ansible_default_ipv4.address }}:2379"
-ETCD_INITIAL_CLUSTER="{{ hostvars[groups['k8s-master'][0]]['name'] }}=https://{{ groups['k8s-master'][0] }}:2380,{{ hostvars[groups['k8s-master'][1]]['name'] }}=https://{{ groups['k8s-master'][1] }}:2380,{{ hostvars[groups['k8s-master'][2]]['name'] }}=http://{{ groups['k8s-master'][2] }}:2380"
+ETCD_INITIAL_CLUSTER="{{ hostvars[groups['k8s-master'][0]]['name'] }}=https://{{ groups['k8s-master'][0] }}:2380,{{ hostvars[groups['k8s-master'][1]]['name'] }}=https://{{ groups['k8s-master'][1] }}:2380,{{ hostvars[groups['k8s-master'][2]]['name'] }}=https://{{ groups['k8s-master'][2] }}:2380"
 ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
 ETCD_INITIAL_CLUSTER_STATE="new"
 
