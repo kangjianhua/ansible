@@ -53,5 +53,8 @@
      - {src: '/workspace/ansible/k8s/roles/etcd/templates/etcd.conf.j2' , dest: '/k8s/etcd/cfg/etcd.conf'}
      - {src: '/workspace/ansible/k8s/roles/etcd/templates/etcd.service.j2' , dest: '/usr/lib/systemd/system/etcd.service'}
 
+- name: 暂停5m
+  shell: sleep 5
+
 - name: 设置ectd 自启动
   service: name=etcd  state=started enabled=yes  daemon_reload=yes
