@@ -1,0 +1,221 @@
+# System default settings live in /usr/lib/sysctl.d/00-system.conf.
+# To override those settings, enter new settings here, or in an /etc/sysctl.d/<name>.conf file
+#
+# For more information, see sysctl.conf(5) and sysctl.d(5).
+# 参数具体查询网址：http://www.tuicool.com/articles/yE7ryq
+# -----------------------------------------------------------------------------------------------------------------#
+#                                                  TCP网络调整                                                     #
+# -----------------------------------------------------------------------------------------------------------------#
+#
+# 放弃回应一个TCP连接请求前﹐需要进行多少次重试。RFC 规定最低的数值是3﹐这也是默认值﹐根据RTO的值大约在3秒 - 
+# 8分钟之间。(注意:这个值同时还决定进入的syn连接)
+net.ipv4.tcp_retries1 = 2
+
+# 在丢弃激活(已建立通讯状况)的TCP连接之前﹐需要进行多少次重试。默认值为15，根据RTO的值来决定，相当于13-30分
+# 钟(RFC1122规定，必须大于100秒).(这个值根据目前的网络设置,可以适当地改小)
+net.ipv4.tcp_retries2 = 5
+
+# 探测消息发送的频率，乘以tcp_keepalive_probes就得到对于从开始探测以来没有响应的连接杀除的时间。默认值为75秒，
+# 也就是没有活动的连接将在大约11分钟以后将被丢弃。(对于普通应用来说,这个值有一些偏大,可以根据需要改小.特别是
+# web类服务器需要改小该值,15是个比较合适的值)
+net.ipv4.tcp_keepalive_intvl = 15
+
+# TCP发送keepalive探测以确定该连接已经断开的次数。(注意:保持连接仅在SO_KEEPALIVE套接字选项被打开是才发送.次数
+# 默认不需要修改,当然根据情形也可以适当地缩短此值.设置为5比较合适)
+net.ipv4.tcp_keepalive_probes = 5
+
+# 是否充当路由器进行包转发 0表示不转发，1表示转发
+net.ipv4.ip_forward = 1
+
+# 反向过滤技术，系统在接收到一个IP包后，检查该IP是不是合乎要求，不合要求的IP包会被系统丢弃。该技术就称为rpfilter。
+# 怎么样的包才算不合要求呢？例如，用户在eth0网口IP为:192.168.8.100 上收到一个IP包，检查其IP为10.0.0.1。然后考查,
+# 对于10.0.0.1这个IP，在发送时应该用哪个网口，如果在不应该接收到该包的网口上接收到该IP包，则认为该IP包是hacker行
+# 为。
+#
+# 例如有两块网卡：
+# A: 192.168.8.100
+# B: (IGMP Query) 10.0.0.1 来自路由器
+#
+# 查找路由表
+# 网卡1为默认路由: 172.17.5.100   172.17.5.1
+# 网卡2            192.168.8.100  192.168.8.1
+#
+# 系统根据路由表，认为10.0.0.1这个IP应该在第一个网卡172.17.5.100上收到，现实的情况是在第二张网卡192.168.8.100上
+# 收到了。认为这是不合理的，丢弃该包。这样会导致网卡无法接收多播数据。
+net.ipv4.conf.default.rp_filter = 0
+net.ipv4.conf.all.rp_filter = 0
+
+# 表示开启SYN Cookies。当出现SYN等待队列溢出时，启用cookies来处理，可防范少量SYN攻击，默认为0，表示关闭；什么
+# 是SYN Cookies:http://www.ibm.com/developerworks/cn/linux/l-syncookie/
+net.ipv4.tcp_syncookies = 1
+
+# 表示SYN队列的长度，默认为1024，加大队列长度,可以容纳更多等待连接的网络连接数。
+net.ipv4.tcp_max_syn_backlog = 1020000
+
+#表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭。
+#net.ipv4.tcp_tw_recycle = 1
+
+#表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭；
+net.ipv4.tcp_tw_reuse = 1
+
+#表示如果套接字由本端要求关闭，这个参数决定了它保持在FIN-WAIT-2状态的时间。
+net.ipv4.tcp_fin_timeout = 1
+
+# 表示当keepalive起用的时候，TCP发送keepalive消息的频度。缺省是2小时。
+net.ipv4.tcp_keepalive_time = 30
+
+# 表示用于向外连接的端口范围。缺省情况下很小：32768到61000，改为1024到65000。
+net.ipv4.ip_local_port_range = 1024    65000
+
+
+# 活动TCP连接重传次数，超过次数视为掉线，放弃连接。缺省值：15，建议设为 2或者3.
+net.ipv4.tcp_retries1 = 2
+net.ipv4.tcp_retries2 = 5
+
+# TCP三次握手的syn/ack阶段，重试次数，缺省5，设为2-3
+net.ipv4.tcp_synack_retries = 3
+
+# 网络设备的接收队列大小
+net.core.netdev_max_backlog = 262144
+
+# 程序准备接受的处于等待建立连接状态的TCP连接。 如果在队列满的时候来了一条连接建立请求，请求会直接被拒绝掉。在许多
+# 的主流操作系统上这个值都默认是128。
+# 该值不能超过 65536 ，否则会报错： sysctl: setting key "net.core.somaxconn": Invalid argument
+net.core.somaxconn = 65535
+
+# 禁用防火墙桥接
+# 如果报错加载模块： 执行 modprobe bridge 测试
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+net.bridge.bridge-nf-call-arptables = 1
+
+
+# -----------------------------------------------------------------------------------------------------------------#
+#                                                    TCP内存调整                                                   #
+# -----------------------------------------------------------------------------------------------------------------#
+#
+# 为所有的协议队列设置操作系统层面的最大的发送 buffer size (wmem) 和 接收 buffer size （rmem）为 12 MB。换句话说，
+# 设置内存数量，分配给每一个为了传送文件而打开或者是创建的 tcp socket 。
+# 警告！在大多数的 Linux 中 rmem_max 和 wmem_max 被分配的值为 128 k，在一个低延迟的网络环境中，或者是 apps 比如 
+# DNS、Web Server，这或许是足够的。尽管如此，如果延迟太大，默认的值可能就太小了，所以请记录以下在你的服务器上用
+# 来提高内存使用方法的设置。
+net.core.wmem_default = 8388608
+net.core.wmem_max = 16777216
+net.core.rmem_default = 8388608
+net.core.rmem_max = 16777216
+
+
+# 除了以上的这些设置，还需要设置 minimum size, initial size, and maximum size in bytes:
+# 内核分配给TCP连接的内存，单位是Page，1 Page = 4096 Bytes，可用命令查看： # getconf PAGESIZE
+# 例如：net.ipv4.tcp_mem = 94500000 915000000 927000000 说明如下：
+# 第一个数字表示，当 tcp 使用的 page 少于 94500000 时，kernel 不对其进行任何的干预
+# 第二个数字表示，当 tcp 使用了超过 915000000 的 pages 时，kernel 会进入 "memory pressure" 压力模式
+# 第三个数字表示，当 tcp 使用的 pages 超过 393216 时（相当于1.6GB内存），就会报：Out of socket memory
+# 对于8GB内存机器，建议用以下参数：
+# net.ipv4.tcp_mem = 524288     699050  1048576  （TCP连接最多约使用4GB内存）
+net.ipv4.tcp_mem = 94500000 915000000 927000000
+
+
+# 接下来，还需要配置TCP连接分配的读、写缓冲区内存大小单位是Byte
+# 例如：net.ipv4.tcp_rmem = 4096        8192    4194304
+#       net.ipv4.tcp_wmem = 4096        8192    4194304
+# 第一个数字表示，为TCP连接分配的最小内存
+# 第二个数字表示，为TCP连接分配的缺省内存
+# 第三个数字表示，为TCP连接分配的最大内存
+# 一般按照缺省值分配，上面的例子就是读写均为8KB，共16KB
+# 1.6GB TCP内存能容纳的连接数，约为  1600MB/16KB = 100K = 10万
+# 4.0GB TCP内存能容纳的连接数，约为  4000MB/16KB = 250K = 25万
+net.ipv4.tcp_rmem = 4096        87380   4194304
+net.ipv4.tcp_wmem = 4096        66384   4194304
+
+# 最大的孤立套接字个数
+# 当cat /proc/net/sockstat看到的orphans数量达到net.ipv4.tcp_max_orphans的约一半时，就会报：Out of socket memory
+# 参考http://blog.tsunanet.net/2011/03/out-of-socket-memory.html
+# 对于net.ipv4.tcp_max_orphans = 65536，当orphans达到32768个时，会报Out of socket memory，此时占用内存 
+# 32K*64KB=2048MB=2GB 
+net.ipv4.tcp_max_orphans = 327680
+
+# 孤立socket废弃前重试的次数，重负载web服务器建议调小
+# 设置较小的数值，可以有效降低orphans的数量（net.ipv4.tcp_orphan_retries = 0并不是想像中的不重试）
+net.ipv4.tcp_orphan_retries = 1
+
+# 表示每个套接字所允许的最大缓冲区的大小。
+net.core.optmem_max = 81920
+
+# 内存中最多ip_conntrack结构的数量.
+net.netfilter.nf_conntrack_max = 1048576
+
+# 内存中最多ip_conntrack结构的数量.
+net.nf_conntrack_max = 1048576
+#------------------------------------------------------------------------------------------------------------------#
+
+
+
+
+
+# -----------------------------------------------------------------------------------------------------------------#
+#                                                    系统调整                                                      #
+# -----------------------------------------------------------------------------------------------------------------#
+
+# 单个消息队列中允许的最大字节长度(限制单个消息队列中所有消息包含的字节数之和) 
+kernel.msgmnb = 65536
+
+# 消息队列中单个消息的最大字节数
+kernel.msgmax = 65536
+
+# 系统所允许的最大共享内存段的大小（以字节为单位）。
+kernel.shmmax = 68719476736
+
+# 系统上可以使用的共享内存的总量（以字节为单位）。
+kernel.shmall = 4294967296
+
+# 该文件指定的值为非零，则激活键盘上的sysrq按键。这个按键用于给内核传递信息，用于紧急情况下重启系统。
+# 当遇到死机或者没有响应的时候，甚至连 tty 都进不去，可以尝试用 SysRq 重启计算机。
+kernel.sysrq = 0
+
+# Core文件的文件名是否添加应用程序pid做为扩展 
+# 0：不添加 
+# 1：添加
+kernel.core_uses_pid = 1
+
+
+# 守护进程太忙而不能接受新的连接，就向对方发送reset消息 
+# 0：关闭 
+# 1：开启
+net.ipv4.tcp_abort_on_overflow = 1
+
+# 系统在同时所处理的最大timewait sockets 数目。如果超过此数的话，time-wait socket 会被立即砍除并且显示警告信息。
+net.ipv4.tcp_max_tw_buckets = 15000
+
+# 表示是否启用有选择的应答（Selective Acknowledgment），这可以通过有选择地应答乱序接收到的报文来提高性能（这样
+# 可以让发送者只发送丢失的报文段）；（对于广域网通信来说）这个选项应该启用，但是这会增加对 CPU 的占用。 
+# 0：不启用 
+# 1：启用
+net.ipv4.tcp_sack = 1
+
+# 表示设置tcp/ip会话的滑动窗口大小是否可变。 
+# 0：不可变 
+# 1：可变
+net.ipv4.tcp_window_scaling = 1
+
+# 表示是否启用以一种比超时重发更精确的方法（请参阅 RFC 1323）来启用对 RTT 的计算；为了实现更好的性能应该启用这个选项。 
+# 0：不启用 
+# 1：启用
+net.ipv4.tcp_timestamps = 0
+
+# 接收带有SRR选项的数据包。主机设为0，路由设为1
+net.ipv4.conf.default.accept_source_route = 0
+
+
+# TCP处于established状态超时时间(秒)
+net.netfilter.nf_conntrack_tcp_timeout_established = 180
+
+
+# 是否禁用ipv6 
+# 0：不禁用 
+# 1：禁用
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+vm.swappiness = 0
+#------------------------------------------------------------------------------------------------------------------#
+

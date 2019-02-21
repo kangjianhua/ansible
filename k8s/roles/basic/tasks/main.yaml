@@ -1,0 +1,68 @@
+---
+- name: 基础软件安装
+  yum: name={{item}} state=present
+  with_items:
+     - gcc
+     - gcc-c++
+     - wget
+     - lrzsz
+     - telnet
+     - net-tools
+     - epel*
+     - vim
+     - unzip
+     - ntpdate
+     - yum-utils
+     - device-mapper-persistent-data
+     - conntrack-tools
+     - libseccomp
+     - libtool-ltdl
+
+- name: 关闭防火墙
+  service: name=firewalld state=stopped enabled=no
+
+
+- name: 卸载现存版本docker
+  yum: name={{item}} state=removed
+  with_items:
+     -  docker-ce
+     -  docker-ce-selinux
+     -  container-selinux
+     -  docker
+
+- name: 添加docker-ce repo 文件
+  shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: 安装docker-ce
+  package: name=docker-ce state=latest
+
+
+- name:  同步优化配置文件
+  template: 'src={{ item.src }} dest={{ item.dest }} mode=0755'
+  with_items:
+     - {src: '/workspace/ansible/k8s/roles/basic/templates/hosts.j2' , dest: '/etc/hosts'}
+     - {src: '/workspace/ansible/k8s/roles/basic/templates/rc.local.j2' , dest: '/etc/rc.local'}
+     - {src: '/workspace/ansible/k8s/roles/basic/templates/sysctl.conf.j2' , dest: '/etc/sysctl.conf'}  
+     - {src: '/workspace/ansible/k8s/roles/basic/templates/limits.conf.j2' , dest: '/etc/security/limits.conf'}     
+     - {src: '/workspace/ansible/k8s/roles/basic/templates/selinux.config.j2' , dest: '/etc/selinux/selinux.config'}    
+
+#- name:  使配置生效
+#  shell: setenforce  0 
+#  ignore_errors: yes
+      
+- name:  使配置生效
+  shell: sysctl -p && sh /etc/rc.local
+  ignore_errors: yes
+
+- name: 启动docker-ce
+  service: name=docker state=started enabled=yes
+
+- name: 关闭swap交换分区
+  shell: swapoff -a   && sed -i 's/.*swap.*/#&/' /etc/fstab
+
+#- name: 设置主机名称
+#  shell: hostnamectl --static set-hostname {{ ansible_hostname }}
+
+- name: change hostname to myserver
+  hostname:
+    name: "{{ name }}"

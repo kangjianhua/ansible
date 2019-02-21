@@ -1,0 +1,57 @@
+---
+- name: 关闭etcd
+  service: name=etcd state=stopped enabled=no
+  ignore_errors: yes
+
+- name: 清理安装目录和数据
+  shell: 'rm -rf {{ item }}'
+  with_items:
+      - /usr/bin/cfssl
+      - /usr/bin/cfssl-certinfo
+      - /usr/bin/cfssljson
+      - /k8s/etcd
+      - /data/etcd
+
+- name: make etcd dirs
+  file:
+       path: '{{ item }}'
+       state: directory
+       mode: 755
+  with_items:
+     - /k8s/etcd/bin
+     - /k8s/etcd/cfg
+     - /k8s/etcd/ssl
+     - /data/etcd
+
+- name: install cfssl
+  copy: 'src=/workspace/ansible/k8s/roles/etcd/bin/cfssl.r1.2/{{ item }} dest=/usr/bin/{{ item }} mode=0777'
+  with_items:
+    - cfssl
+    - cfssl-certinfo
+    - cfssljson
+
+- name: install etcd
+  copy: 'src=/workspace/ansible/k8s/roles/etcd/bin/etcd.3.3.10/{{ item }} dest=/k8s/etcd/bin/{{ item }} mode=0777'
+  with_items:
+    - etcd
+    - etcdctl
+
+- name: copy etcd ca key
+  copy: 'src=/workspace/ansible/k8s/roles/etcd/bin/etcd.ca/{{ item }} dest=/k8s/etcd/ssl/{{ item }} mode=0755'
+  with_items:
+    - ca.csr
+    - ca-key.pem
+    - ca.pem
+    - server.csr
+    - server-key.pem
+    - server.pem
+
+
+- name: add etcd config file
+  template: 'src={{ item.src }} dest={{ item.dest }} mode=0755'
+  with_items:
+     - {src: '/workspace/ansible/k8s/roles/etcd/templates/etcd.conf.j2' , dest: '/k8s/etcd/cfg/etcd.conf'}
+     - {src: '/workspace/ansible/k8s/roles/etcd/templates/etcd.service.j2' , dest: '/usr/lib/systemd/system/etcd.service'}
+
+- name: 设置ectd 自启动
+  service: name=etcd  state=started enabled=yes  daemon_reload=yes

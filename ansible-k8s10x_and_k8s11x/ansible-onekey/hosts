@@ -1,0 +1,22 @@
+[slb]
+172.20.101.157 name=slb-157 type=MASTER priority=100
+172.20.101.158 name=slb-158 type=BACKUP priority=90
+
+[k8s-master]
+172.20.101.157 name=node01  order=1 
+172.20.101.165 name=node02  order=2 
+172.20.101.167 name=node03  order=3 
+
+[k8s-node]
+172.20.101.160 name=node04 
+172.20.101.166 name=node05
+172.20.101.164 name=node06 
+
+[k8s-all:children]
+k8s-master
+k8s-node
+
+[all:vars]
+local_images=registry.cn-hangzhou.aliyuncs.com/k8sth
+k8s_version=1.11.1
+vip=172.20.101.253
