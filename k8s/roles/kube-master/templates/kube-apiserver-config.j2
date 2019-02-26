@@ -1,0 +1,20 @@
+KUBE_APISERVER_OPTS="--logtostderr=true \
+--v=4 \
+--etcd-servers=https://{{ groups['k8s-master'][0] }}:2379,https://{{ groups['k8s-master'][1] }}:2379,https://{{ groups['k8s-master'][2] }}:2379 \
+--bind-address={{ ansible_default_ipv4.address }} \
+--secure-port=6443 \
+--advertise-address={{ ansible_default_ipv4.address }} \
+--allow-privileged=true \
+--service-cluster-ip-range=10.254.0.0/16 \
+--enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota,NodeRestriction \
+--authorization-mode=RBAC,Node \
+--enable-bootstrap-token-auth \
+--token-auth-file=/k8s/kubmaster/cfg/token.csv \
+--service-node-port-range=30000-50000 \
+--tls-cert-file=/k8s/kubmaster/ssl/server.pem  \
+--tls-private-key-file=/k8s/kubmaster/ssl/server-key.pem \
+--client-ca-file=/k8s/kubmaster/ssl/ca.pem \
+--service-account-key-file=/k8s/kubmaster/ssl/ca-key.pem \
+--etcd-cafile=/k8s/etcd/ssl/ca.pem \
+--etcd-certfile=/k8s/etcd/ssl/server.pem \
+--etcd-keyfile=/k8s/etcd/ssl/server-key.pem"

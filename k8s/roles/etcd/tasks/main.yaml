@@ -2,15 +2,16 @@
 - name: 关闭etcd
   service: name=etcd state=stopped enabled=no
   ignore_errors: yes
+  tags:
+      - shutdown
 
 - name: 清理安装目录和数据
   shell: 'rm -rf {{ item }}'
   with_items:
-      - /usr/bin/cfssl
-      - /usr/bin/cfssl-certinfo
-      - /usr/bin/cfssljson
       - /k8s/etcd
       - /data/etcd
+  tags:
+      - shutdown
 
 - name: make etcd dirs
   file:
@@ -22,16 +23,11 @@
      - /k8s/etcd/cfg
      - /k8s/etcd/ssl
      - /data/etcd
-
-- name: install cfssl
-  copy: 'src=/workspace/ansible/k8s/roles/etcd/bin/cfssl.r1.2/{{ item }} dest=/usr/bin/{{ item }} mode=0777'
-  with_items:
-    - cfssl
-    - cfssl-certinfo
-    - cfssljson
+  tags:
+      - shutdown
 
 - name: install etcd
-  copy: 'src=/workspace/ansible/k8s/roles/etcd/bin/etcd.3.3.10/{{ item }} dest=/k8s/etcd/bin/{{ item }} mode=0777'
+  copy: 'src=/workspace/etcd.3.3.10/{{ item }} dest=/k8s/etcd/bin/{{ item }} mode=0777'
   with_items:
     - etcd
     - etcdctl

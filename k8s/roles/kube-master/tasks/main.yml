@@ -1,0 +1,139 @@
+---
+- name: 关闭 kubmaste-api 服务
+  service: name=kube-apiserver  state=stopped enabled=no
+  ignore_errors: yes
+
+- name: 闭kube-scheduler服务
+  service: name=kube-scheduler.service  state=stopped enabled=no
+  ignore_errors: true
+
+- name: 关闭 kube-controller-manager 服务
+  service: name=kube-scheduler.service  state=stopped enabled=no
+  ignore_errors: true
+
+- name: 清理安装目录和数据
+  shell: 'rm -rf {{ item }}'
+  with_items:
+      - /k8s/kubmaster
+      - /usr/bin/kube-apiserver
+      - /usr/bin/kube-controller-manager
+      - /usr/bin/kube-scheduler
+      - /usr/bin/kubectl
+      - /usr/lib/systemd/system/kube-apiserver.service
+      - /usr/lib/systemd/system/kube-scheduler.service
+      - /usr/lib/systemd/system/kube-controller-manager.service
+
+- name: 新建master节点需要目录
+  file:
+       path: '{{ item }}'
+       state: directory
+       mode: 755
+  with_items:
+     - /k8s/kubmaster/
+     - /k8s/kubmaster/cfg
+     - /k8s/kubmaster/ssl
+     - /k8s/kubmaster/ca
+
+- name: 下载 kube-master 二进制
+  copy: src=/workspace/kub-server.1.13.1/{{ item }} dest=/usr/bin/{{ item }} mode=0755
+  with_items:
+      - kube-apiserver
+      - kube-controller-manager
+      - kube-scheduler
+      - kubectl
+
+
+- name: 分发证书相关
+  copy: 'src=/workspace/ansible/k8s/roles/kube-master/bin/ca/{{ item }} dest=/k8s/kubmaster/ssl/{{ item }} mode=0755'
+  with_items:
+    - ca.csr
+    - ca-key.pem
+    - ca.pem
+    - ca-config.json
+    - kube-proxy-csr.json
+
+
+- name: 同步master节点server模板文件
+  template: 'src={{ item.src }} dest={{ item.dest }} mode=0755'
+  with_items:
+     - {src: '/workspace/ansible/k8s/roles/kube-master/templates/server-csr.json.j2' , dest: '/k8s/kubmaster/ssl/server-csr.json'}
+     - {src: '/workspace/ansible/k8s/roles/kube-master/templates/basic-auth.csv.j2' , dest: '/k8s/kubmaster/ssl/basic-auth.csv'}
+  tags: 
+      - serverkey
+
+- name: 同步master api-server模板文件
+  template: 'src={{ item.src }} dest={{ item.dest }} mode=0755'
+  with_items:
+     - {src: '/workspace/ansible/k8s/roles/kube-master/templates/kube-apiserver-config.j2' , dest: '/k8s/kubmaster/cfg/kube-apiserver'}
+     - {src: '/workspace/ansible/k8s/roles/kube-master/templates/kube-apiserver.service.j2' , dest: '/usr/lib/systemd/system/kube-apiserver.service'}
+     - {src: '/workspace/ansible/k8s/roles/kube-master/templates/token.csv.j2' , dest: '/k8s/kubmaster/cfg/token.csv'}
+
+- name: 同步scheduler.service模板文件
+  template: 'src={{ item.src }} dest={{ item.dest }} mode=0755'
+  with_items:
+     - {src: '/workspace/ansible/k8s/roles/kube-master/templates/kube-scheduler.service.j2' , dest: '/usr/lib/systemd/system/kube-scheduler.service'}
+     - {src: '/workspace/ansible/k8s/roles/kube-master/templates/kube-scheduler-config.j2' , dest: '/k8s/kubmaster/cfg/kube-scheduler'}
+
+- name: 同步kube-controller-manager模板文件
+  template: 'src={{ item.src }} dest={{ item.dest }} mode=0755'
+  with_items:
+     - {src: '/workspace/ansible/k8s/roles/kube-master/templates/kube-controller-manager-config.j2' , dest: '/k8s/kubmaster/cfg/kube-controller-manager'}
+     - {src: '/workspace/ansible/k8s/roles/kube-master/templates/kube-controller-manager.service.j2' , dest: '/usr/lib/systemd/system/kube-controller-manager.service'}
+
+
+- name: 创建 kubmaster 证书和私钥
+  shell: "cd /k8s/kubmaster/ssl/ && cfssl gencert \
+        -ca=/k8s/kubmaster/ssl/ca.pem \
+        -ca-key=/k8s/kubmaster/ssl/ca-key.pem \
+        -config=/k8s/kubmaster/ssl/ca-config.json \
+        -profile=kubernetes /k8s/kubmaster/ssl/server-csr.json | cfssljson -bare server"
+
+
+- name: 创建 kub-proxy 证书和私钥
+  shell: "cd /k8s/kubmaster/ssl/ && cfssl gencert \
+        -ca=/k8s/kubmaster/ssl/ca.pem \
+        -ca-key=/k8s/kubmaster/ssl/ca-key.pem \
+        -config=/k8s/kubmaster/ssl/ca-config.json \
+        -profile=kubernetes /k8s/kubmaster/ssl/kube-proxy-csr.json | cfssljson -bare kube-proxy"
+  
+
+- name: 启动 kubmaste-api 服务
+  service: name=kube-apiserver  state=started enabled=yes  daemon_reload=yes
+
+
+- name: 启动 kube-scheduler.service 服务
+  service: name=kube-scheduler.service  state=started enabled=yes  daemon_reload=yes
+
+
+- name: 启动 kube-controller-manager 服务
+  service: name=kube-controller-manager  state=started enabled=yes  daemon_reload=yes
+
+
+#- name: 启动 master 服务
+#  shell: "systemctl daemon-reload && systemctl restart kube-apiserver && \
+#  systemctl restart kube-controller-manager && systemctl restart kube-scheduler"
+
+#- name: 启动 master 服务
+#  shell: "systemctl status kube-apiserver && \
+#  systemctl status kube-controller-manager && systemctl status kube-scheduler"
+
+
+- name: 检查集群状态
+  shell: kubectl get componentstatus
+  register: output
+  tags:
+      - check
+
+- name: 打印集群检查结果信息 
+  debug: var=output.stdout_lines
+  tags:
+      - check
+
+#- name: 查询集群节点状态
+#  command: kubectl get node"
+#  register: result
+#  until:    result.rc == 0
+#  retries:  5
+#  delay: 6
+#  delegate_to: "{{ groups.deploy[0] }}"
+#  run_once: True

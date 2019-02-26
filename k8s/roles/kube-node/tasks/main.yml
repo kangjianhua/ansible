@@ -1,0 +1,164 @@
+me: 关闭 kubelet.service 服务
+  service: name=kubelet.service  state=stopped enabled=no
+  ignore_errors: yes
+  tags:
+      - shutdown
+
+- name: 关闭 kube-proxy.service 服务
+  service: name=kube-scheduler.service  state=stopped enabled=no
+  ignore_errors: true
+  tags:
+      - shutdown
+
+- name: 清理安装目录和数据
+  shell: 'rm -rf {{ item }}'
+  with_items:
+      - /k8s/kubnode
+      - /usr/bin/kube-proxy
+      - /usr/bin/kubelet
+      - /usr/bin/kubectl
+      - /usr/bin/kubeadm
+      - /usr/lib/systemd/system/kubelet.service 
+      - /usr/lib/systemd/system/kube-proxy.service
+  tags:
+      - shutdown
+
+- name: 新建node节点需要目录
+  file:
+       path: '{{ item }}'
+       state: directory
+       mode: 755
+  with_items:
+      - /k8s/kubnode/
+      - /k8s/kubnode/cfg
+      - /k8s/kubnode/ssl
+      - /k8s/kubnode/ca
+  tags:
+      - setup-kubectl
+
+- name: 下载 kube-node 二进制
+  copy: src=/workspace/kub-node.1.13.1/{{ item }} dest=/usr/bin/{{ item }} mode=0755
+  with_items:
+      - kube-proxy
+      - kubelet
+      - kubectl
+      - kubeadm
+  tags:
+      - setup-kubectl
+
+- name: 分发证书相关
+  copy: 'src=/workspace/ansible/k8s/roles/kube-node/bin/ca/{{ item }} dest=/k8s/kubnode/ssl/{{ item }} mode=0755'
+  with_items:
+      - ca.csr
+      - ca-key.pem
+      - ca.pem
+      - ca-config.json
+  tags:
+      - setup-kubectl
+
+
+
+- name: 生成kubelet参数配置模板文件和kubelet配置文件
+  template: 'src={{ item.src }} dest={{ item.dest }} mode=0755'
+  with_items:
+     - {src: '/workspace/ansible/k8s/roles/kube-node/templates/kubelet.template.j2' , dest: '/k8s/kubnode/cfg/kubelet.config'}
+     - {src: '/workspace/ansible/k8s/roles/kube-node/templates/kubelet.config.j2' , dest: '/k8s/kubnode/cfg/kubelet'}
+     - {src: '/workspace/ansible/k8s/roles/kube-node/templates/kubelet.service.j2' , dest: '/usr/lib/systemd/system/kubelet.service'}  
+  tags: 
+      - kubelet
+
+
+- name: 设置集群参数-kubelet
+  shell: "cd /k8s/kubnode/cfg/ && kubectl config set-cluster kubernetes \
+  --certificate-authority=/k8s/kubnode/ssl/ca.pem \
+  --embed-certs=true \
+  --server={{ groups['k8s-master'][0] }}:6443 \
+  --kubeconfig=bootstrap.kubeconfig"
+  tags:
+      - setup-kubectl
+
+- name: 设置客户端认证参数-kubelet
+  shell: "cd /k8s/kubnode/cfg/ && kubectl config set-credentials kubelet-bootstrap \
+  --token='{{BOOTSTRAP_TOKEN}}' \
+  --kubeconfig=bootstrap.kubeconfig"
+
+
+- name: 设置上下文参数-kubelet
+  shell: "cd /k8s/kubnode/cfg/ && kubectl config set-context default \
+  --cluster=kubernetes \
+  --user=kubelet-bootstrap \
+  --kubeconfig=bootstrap.kubeconfig"
+
+- name: 设置默认上下文-kubelet
+  shell: "cd /k8s/kubnode/cfg/ && kubectl config use-context default --kubeconfig=bootstrap.kubeconfig"
+ 
+- name: 创建kubeconfig文件-kube-proxy
+  shell: "cd /k8s/kubnode/cfg/ && kubectl config set-cluster kubernetes \
+  --certificate-authority=/k8s/kubnode/ssl/ca.pem \
+  --embed-certs=true \
+  --server='{{ groups['k8s-master'][0] }}':6443 \
+  --kubeconfig=kube-proxy.kubeconfig"
+
+
+
+- name: 创建kube-proxy参数配置模板文件和配置文件
+  template: 'src={{ item.src }} dest={{ item.dest }} mode=0755'
+  with_items:
+     - {src: '/workspace/ansible/k8s/roles/kube-node/templates/kube-proxy-config.j2' , dest: '/k8s/kubnode/cfg/kube-proxy'}
+     - {src: '/workspace/ansible/k8s/roles/kube-node/templates/kube-proxy.service.j2' , dest: '/usr/lib/systemd/system/kube-proxy.service'}
+     - {src: '/workspace/ansible/k8s/roles/kube-node/templates/kube-proxy-csr.json.j2' , dest: '/k8s/kubnode/ssl/kube-proxy-csr.json'}  
+  tags: 
+      - proxy
+
+
+- name: 创建 kub-proxy 证书和私钥
+  shell: "cd /k8s/kubnode/ssl/ && cfssl gencert \
+  -ca=/k8s/kubnode/ssl/ca.pem \
+  -ca-key=/k8s/kubnode/ssl/ca-key.pem \
+  -config=/k8s/kubnode/ssl/ca-config.json \
+  -profile=kubernetes /k8s/kubnode/ssl/kube-proxy-csr.json | cfssljson -bare kube-proxy"
+
+
+
+- name: 设置kube-proxy kubeconfig CA配置-kube-proxy
+  shell: "cd /k8s/kubnode/cfg/ && kubectl config set-credentials kube-proxy \
+  --client-certificate=/k8s/kubnode/ssl/kube-proxy.pem \
+  --client-key=/k8s/kubnode/ssl/kube-proxy-key.pem \
+  --embed-certs=true \
+  --kubeconfig=kube-proxy.kubeconfig"
+
+
+- name: 设置kube-proxy kubeconfig 上下文参数-kube-proxy
+  shell: "cd /k8s/kubnode/cfg/ && kubectl config set-context default \
+  --cluster=kubernetes \
+  --user=kube-proxy \
+  --kubeconfig=kube-proxy.kubeconfig"
+
+ 
+- name: 创建kube-proxy kubeconfig,设置默认上下文-kube-proxy
+  shell: "cd /k8s/kubnode/cfg/ && kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig"
+ 
+
+
+#- name: 启动 kubelet 服务
+#  service: name=kubelet  state=started enabled=yes  daemon_reload=yes
+#
+#- name: 将kubelet-bootstrap用户绑定到系统集群角色 ,注意:这个默认连接localhost:8080端口，在master上操作  
+#  shell: "kubectl create clusterrolebinding kubelet-bootstrap \
+#  --clusterrole=system:node-bootstrapper \
+#  --user=kubelet-bootstrap"
+#  delegate_to: "{{ groups['k8s-master'][0] }}"
+#
+#- name: 批准kubelet 的 TLS 证书请求
+#  shell: kubectl get csr|grep 'Pending' | awk 'NR>0{print $1}'| xargs kubectl certificate approve
+#  delegate_to: "{{ groups['k8s-master'][0] }}"
+#
+#
+#- name: 启动kube-proxy 服务
+#  service: name=kube-proxy  state=started enabled=yes  daemon_reload=yes
+#
+#- name: 检查集群状态
+#  shell: kubectl get nodes
+#  register: output
+#  tags:
+#      - check

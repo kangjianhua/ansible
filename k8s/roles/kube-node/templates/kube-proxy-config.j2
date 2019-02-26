@@ -1,0 +1,5 @@
+KUBE_PROXY_OPTS="--logtostderr=true \
+--v=4 \
+--hostname-override={{ inventory_hostname }} \
+--cluster-cidr={{CLUSTER_CIDR}} \
+--kubeconfig=/k8s/kubnode/cfg/kube-proxy.kubeconfig"

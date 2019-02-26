@@ -1,0 +1,8 @@
+KUBELET_OPTS="--logtostderr=true \
+--v=4 \
+--hostname-override={{ inventory_hostname }} \
+--kubeconfig=/k8s/kubnode/cfg/kubelet.kubeconfig \
+--bootstrap-kubeconfig=/k8s/kubnode/cfg/bootstrap.kubeconfig \
+--config=/k8s/kubnode/cfg/kubelet.config \
+--cert-dir=/k8s/kubnode/ssl \
+--pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google-containers/pause-amd64:3.0"
