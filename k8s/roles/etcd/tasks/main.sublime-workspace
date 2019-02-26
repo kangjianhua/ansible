@@ -1,0 +1,344 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"docker",
+				"docker-ce"
+			],
+			[
+				"log",
+				"logstash"
+			],
+			[
+				"k",
+				"kl"
+			],
+			[
+				"book",
+				"books"
+			],
+			[
+				"_",
+				"_mapping"
+			],
+			[
+				"get",
+				"GET"
+			],
+			[
+				"file",
+				"filebeat"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 27.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control:",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: install",
+				"Package Control: Install Package"
+			],
+			[
+				"py",
+				"Set Syntax: Python"
+			],
+			[
+				"Package Control: s",
+				"Package Control: List Packages"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/kevin/workspace/k8s1.13/coredns/kubernetes1.13.1集群部署coredns.md",
+		"/Users/kevin/workspace/k8s1.13/README.md",
+		"/Users/kevin/Documents/delete.js.20181224.txt",
+		"/Users/kevin/workspace/ansible/curator/awsesbak/awsesbak-reindex-ptlog-dd.yml",
+		"/Users/kevin/workspace/ansible/curator/examples/actions/delete_indices-cnesbak.yml",
+		"/Users/kevin/workspace/nginx/online/awstraefik.ptmind.com.conf",
+		"/Users/kevin/workspace/ansible/cnlvs/sysenv.yml",
+		"/Users/kevin/百度云同步盘/独立项目-2018/武清国际网降速-20M-20181127/国际网减速合同邮寄地址.txt",
+		"/Users/kevin/Downloads/-.txt",
+		"/Users/kevin/Downloads/- (2).sql",
+		"/Users/kevin/Downloads/- (1).sql",
+		"/untitled",
+		"/中国greenplum-prod",
+		"/Users/kevin/Documents/sysenv.yml",
+		"/test-db",
+		"/Users/kevin/workspace/om-elk/mapping/datadeck-template.json",
+		"/Users/kevin/workspace/om-elk/mapping/slack-template.json",
+		"/Users/kevin/workspace/om-elk/mapping/ptengine-template.json",
+		"/Users/kevin/Downloads/PTE集群统计表-招行 - 配置-v2.pdf",
+		"/untitled.yaml",
+		"/Users/kevin/Desktop/filebeat.yml",
+		"/Users/kevin/百度云同步盘/Ptmind-folder/行政相关/招聘/初级网络运维工程师",
+		"/Users/kevin/Desktop/ddprivate.datadeck.cn.com",
+		"/Users/kevin/Documents/ceph.conf",
+		"/Users/kevin/Documents/keepalived.conf",
+		"/Users/kevin/Desktop/1tracertroute.txt",
+		"/Users/kevin/Desktop/DNSMASQ配置部署",
+		"/Users/kevin/Desktop/test-pront",
+		"/Users/kevin/Downloads/jp-aws-es-hot-disk-1522835148298.json",
+		"/Users/kevin/Downloads/111111.js",
+		"/Users/kevin/Downloads/compose/rancher-compose.yml",
+		"/Users/kevin/Downloads/compose/docker-compose.yml",
+		"/Users/kevin/Desktop/index.html",
+		"/Users/kevin/Downloads/2017 Ptmind 自我评价表 （试用版）V1.docx",
+		"/Users/kevin/Documents/settings-pte.xml",
+		"/1516028306 14:58:26 4358663     \t1516028172 14:56:",
+		"/Users/kevin/Documents/datadeck-index.json",
+		"/Users/kevin/Desktop/mapping.txt",
+		"/Users/kevin/Documents/my.cnf",
+		"/Users/kevin/Downloads/tokyo-key01.pem",
+		"/Users/kevin/Desktop/vpc-test.txt",
+		"/Users/kevin/Desktop/vpc-test-autoscaling.txt",
+		"/Users/kevin/Desktop/transactions.txt",
+		"/Users/kevin/Downloads/ptkevin-amk.pem",
+		"/Users/kevin/Downloads/aws-key/ptkevin-private-key.pem",
+		"/Users/kevin/百度云同步盘/2017独立项目/aws培训/aws 培训资料.txt",
+		"/Users/kevin/Documents/auth.conf",
+		"/Users/kevin/Documents/config_CN.md",
+		"/Users/kevin/Documents/index.html",
+		"/Users/kevin/Desktop/domainlist.txt",
+		"/Users/kevin/rancher_bash",
+		"/Users/kevin/百度云同步盘/个人2017/自住型商品房/咨询电话",
+		"/Users/kevin/百度云同步盘/个人2017/自住型商品房/公租房 68636205",
+		"/Users/kevin/Desktop/s-01.log",
+		"/Users/kevin/Desktop/m-01.log",
+		"/Users/kevin/workspace/docs-cn/op-guide/binary-deployment.md",
+		"/Users/kevin/workspace/docs-cn/op-guide/configuration.md",
+		"/Users/kevin/workspace/docs-cn/op-guide/docker-deployment.md",
+		"/Users/kevin/workspace/docs-cn/op-guide/horizontal-scale.md",
+		"/Users/kevin/workspace/docs-cn/op-guide/monitor.md",
+		"/Users/kevin/workspace/docs-cn/README.md",
+		"/Users/kevin/Downloads/log.txt",
+		"/Users/kevin/workspace/om-config/README.md",
+		"/Users/kevin/Desktop/globalEvent.js",
+		"/Users/kevin/Documents/ptone-middle-template.json",
+		"/Users/kevin/Documents/filebeat.json",
+		"/Users/kevin/Desktop/nginx.json",
+		"/Users/kevin/Downloads/elk集群安装配置.mdown",
+		"/Users/kevin/360云盘/Mac-soft/macos 安装brew 和wget",
+		"/Users/kevin/Library/Containers/com.tencent.qq/Data/Library/Application Support/QQ/435002493/Image/469I~BXYCL4RH7)(7NY1O`E.png",
+		"/Users/kevin/360云盘/个人/康建华-计算机应用软件（本科）/康建华自考信息",
+		"/Users/kevin/Documents/server.cnf",
+		"/Users/kevin/Documents/filebeat.yml",
+		"/Users/kevin/workspace/ptengine-cn-site/Dockerfile",
+		"/Users/kevin/Desktop/ptengine.txt",
+		"/Users/kevin/Documents/11server.cnf",
+		"/Users/kevin/Desktop/svn/Server config/ssl/ptengine.cn and  ptmind.com   到期日期2018年9月29日/ptengine.cnKeyAndCSR.txt",
+		"/Users/kevin/360云盘/ptmind业务服务配置/centos7/nginx/nginx1.9.12-tcp-stream配置文档20160309.txt",
+		"/Users/kevin/Documents/Kitematic/hello-world-nginx/website_files/index.html",
+		"/Users/kevin/Downloads/MariaDB Galera Cluster 介绍.sh",
+		"/Users/kevin/Desktop/mariadb.log",
+		"/Users/kevin/Downloads/launcher.cgi",
+		"/Users/kevin/Desktop/svn/Server config/ssl/ptengine.cn and  ptmind.com   到期日期2018年9月29日/ptengine.cn.crt",
+		"/Users/kevin/Desktop/ceph.conf",
+		"/Users/kevin/Downloads/rancher-ha.sh",
+		"/Users/kevin/Downloads/企业站/index.html",
+		"/Users/kevin/Downloads/rancher-compose-v0.7.3/rancher-compose",
+		"/Users/kevin/workspace/ptone-project/pom.xml",
+		"/Users/kevin/Downloads/172.16.7.14-1459408314605",
+		"/Users/kevin/workspace/om-docker-base/service/tomcat/7/apache-tomcat-7.0.59/bin/catalina.sh",
+		"/Users/kevin/workspace/nginx-online-cn/collect.ptone.cn.conf",
+		"/Users/kevin/workspace/nginx-online-jp/testcoll.ptengine.jp.conf",
+		"/Users/kevin/360云盘/独立项目/2016/aws/s3/必须安装网桥工具bridge-utils，运行命令：",
+		"/Users/kevin/360云盘/独立项目/2016/aws/s3/S3访问地址和key",
+		"/Users/kevin/workspace/docker-compose/centos7-1-cn/Dockerfile",
+		"/Users/kevin/workspace/docker-compose/centos7cn/Dockerfile",
+		"/Users/kevin/workspace/docker-compose/centos7cn/README",
+		"/Users/kevin/Desktop/nginx.conf",
+		"/Users/kevin/360云盘/ptmind业务服务配置/centos7/http:::nginx.org:download:nginx-1.9.12.tar.gz",
+		"/centos7安装配置redis：",
+		"/#daemonize no  默认情况下， redis 不是在后台运行的，如果需要在后台运行，把该项",
+		"/Users/kevin/360云盘/独立项目/运维自动化",
+		"/Users/kevin/Documents/container 相关主机数据存储目录规划：",
+		"/Users/kevin/Desktop/workspace/conf/vhost_conf/jptest.ptmind.com.conf",
+		"/Users/kevin/Documents/neux简述",
+		"/Users/kevin/Documents/s3test-rgw.py",
+		"/Users/kevin/Documents/untitled text 4.txt",
+		"/Users/kevin/Documents/untitled text 7.txt",
+		"/Users/kevin/Documents/sftp-config.json",
+		"/Users/kevin/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/kevin/Documents/untitled text 6.txt",
+		"/Users/kevin/Documents/untitled text 5.txt",
+		"/Users/kevin/Documents/untitled text 3.txt",
+		"/Users/kevin/Documents/untitled text 2.txt",
+		"/Users/kevin/Library/Application Support/Sublime Text 3/Packages/BracketHighlighter/bh_tag.sublime-settings",
+		"/Users/kevin/Library/Application Support/Sublime Text 3/Packages/BracketHighlighter/bh_core.sublime-settings",
+		"/Users/kevin/Library/Application Support/Sublime Text 3/Packages/User/Distraction Free.sublime-settings",
+		"/Users/kevin/Library/Application Support/Sublime Text 3/Packages/User/Plain text.sublime-settings",
+		"/Users/kevin/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/Users/kevin/Public/ceph对象存储服务、高可用安装配置、"
+	],
+	"find":
+	{
+		"height": 26.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 30.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.sftp":
+	{
+		"height": 100.0
+	},
+	"pinned_build_system": "Packages/Python 3/Python3.sublime-build",
+	"project": "main.sublime-project",
+	"replace":
+	{
+		"height": 70.0
+	},
+	"save_all_on_build": false,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/workspace/docker-compose/tomcat/7/Dockerfile.sublime-workspace"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
