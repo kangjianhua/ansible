@@ -1,6 +1,11 @@
 #!/bin/bash
+
+ETCD_KEY="--ca-file=/k8s/etcd/ssl/ca.pem --cert-file=/k8s/etcd/ssl/server.pem --key-file=/k8s/etcd/ssl/server-key.pem"
+ETCDCTL_API=3
+ETCD_ENDPOINTS="https://{{ groups['k8s-master'][0] }}:2379,https://{{ groups['k8s-master'][1] }}:2379,https://{{ groups['k8s-master'][2] }}:2379"
+
 echo #cluster-health
-/k8s/etcd/bin/etcdctl --ca-file=/k8s/etcd/ssl/ca.pem --cert-file=/k8s/etcd/ssl/server.pem --key-file=/k8s/etcd/ssl/server-key.pem --endpoints="https://{{ ansible_default_ipv4.address }}:2379" cluster-health
+/k8s/etcd/bin/etcdctl ${ETCD_KEY} --endpoints="https://{{ ansible_default_ipv4.address }}:2379" cluster-health
 
 echo --
 echo ============================================================================================================
@@ -8,3 +13,11 @@ echo --
 
 echo #cluster member
 /k8s/etcd/bin/etcdctl --ca-file=/k8s/etcd/ssl/ca.pem --cert-file=/k8s/etcd/ssl/server.pem --key-file=/k8s/etcd/ssl/server-key.pem --endpoints="https://{{ ansible_default_ipv4.address }}:2379" member list
+
+
+
+#export ETCDCTL_API=3
+#export ETCD_ENDPOINTS="https://172.20.101.157:2379,https://172.20.101.165:2379,https://172.20.101.164:2379"
+#export ETCD_CMDKEY="--cacert=/k8s/etcd/ssl/ca.pem  --cert=/k8s/etcd/ssl/server.pem --key=/k8s/etcd/ssl/server-key.pem"
+#etcdctl --endpoints=${ETCD_ENDPOINTS} ${ETCD_CMDKEY} get /
+#etcdctl --endpoints=${ETCD_ENDPOINTS} ${ETCD_CMDKEY} get /  --prefix -w=json|python -m json.tool

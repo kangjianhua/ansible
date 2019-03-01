@@ -5,7 +5,7 @@ Requires=docker.service
  
 [Service]
 EnvironmentFile=/k8s/kubnode/cfg/kubelet
-ExecStart=/k8s/kubnode/bin/kubelet $KUBELET_OPTS
+ExecStart=/usr/bin/kubelet $KUBELET_OPTS
 Restart=on-failure
 KillMode=process
  

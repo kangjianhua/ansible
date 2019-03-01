@@ -2,14 +2,20 @@
 - name: 关闭 kubmaste-api 服务
   service: name=kube-apiserver  state=stopped enabled=no
   ignore_errors: yes
+  tags:
+      - shutdown
 
 - name: 闭kube-scheduler服务
   service: name=kube-scheduler.service  state=stopped enabled=no
   ignore_errors: true
+  tags:
+      - shutdown
 
 - name: 关闭 kube-controller-manager 服务
-  service: name=kube-scheduler.service  state=stopped enabled=no
+  service: name=kube-controller-manager.service  state=stopped enabled=no
   ignore_errors: true
+  tags:
+      - shutdown
 
 - name: 清理安装目录和数据
   shell: 'rm -rf {{ item }}'
@@ -22,6 +28,8 @@
       - /usr/lib/systemd/system/kube-apiserver.service
       - /usr/lib/systemd/system/kube-scheduler.service
       - /usr/lib/systemd/system/kube-controller-manager.service
+  tags:
+      - shutdown
 
 - name: 新建master节点需要目录
   file:

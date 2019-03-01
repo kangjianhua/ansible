@@ -1,8 +1,17 @@
 {
   "CN": "system:node:{{ inventory_hostname }}",
   "hosts": [
-    "127.0.0.1",
-    "{{ inventory_hostname }}"
+      "10.254.0.1",
+      "127.0.0.1",
+      "0.0.0.0",
+{% for host in groups['k8s-all'] %}
+        "{{host}}",
+{% endfor %}
+      "kubernetes",
+      "kubernetes.default",
+      "kubernetes.default.svc",
+      "kubernetes.default.svc.cluster",
+      "kubernetes.default.svc.cluster.local"
   ],
   "key": {
     "algo": "rsa",

@@ -1,12 +1,13 @@
-me: 关闭 kubelet.service 服务
-  service: name=kubelet.service  state=stopped enabled=no
+---
+- name: 关闭 kubelet.service 服务
+  service: name=kubelet  state=stopped enabled=no
   ignore_errors: yes
   tags:
       - shutdown
 
 - name: 关闭 kube-proxy.service 服务
-  service: name=kube-scheduler.service  state=stopped enabled=no
-  ignore_errors: true
+  service: name=kube-proxy state=stopped enabled=no
+  ignore_errors: yes
   tags:
       - shutdown
 
@@ -61,8 +62,8 @@ me: 关闭 kubelet.service 服务
 - name: 生成kubelet参数配置模板文件和kubelet配置文件
   template: 'src={{ item.src }} dest={{ item.dest }} mode=0755'
   with_items:
-     - {src: '/workspace/ansible/k8s/roles/kube-node/templates/kubelet.template.j2' , dest: '/k8s/kubnode/cfg/kubelet.config'}
-     - {src: '/workspace/ansible/k8s/roles/kube-node/templates/kubelet.config.j2' , dest: '/k8s/kubnode/cfg/kubelet'}
+     - {src: '/workspace/ansible/k8s/roles/kube-node/templates/kubelet.config.j2' , dest: '/k8s/kubnode/cfg/kubelet.config'}
+     - {src: '/workspace/ansible/k8s/roles/kube-node/templates/kubelet.j2' , dest: '/k8s/kubnode/cfg/kubelet'}
      - {src: '/workspace/ansible/k8s/roles/kube-node/templates/kubelet.service.j2' , dest: '/usr/lib/systemd/system/kubelet.service'}  
   tags: 
       - kubelet
@@ -140,25 +141,32 @@ me: 关闭 kubelet.service 服务
  
 
 
-#- name: 启动 kubelet 服务
-#  service: name=kubelet  state=started enabled=yes  daemon_reload=yes
-#
+- name: 启动 kubelet 服务
+  service: name=kubelet  state=started enabled=yes  daemon_reload=yes
+
 #- name: 将kubelet-bootstrap用户绑定到系统集群角色 ,注意:这个默认连接localhost:8080端口，在master上操作  
 #  shell: "kubectl create clusterrolebinding kubelet-bootstrap \
 #  --clusterrole=system:node-bootstrapper \
 #  --user=kubelet-bootstrap"
+#  run_once: true
 #  delegate_to: "{{ groups['k8s-master'][0] }}"
-#
+
 #- name: 批准kubelet 的 TLS 证书请求
 #  shell: kubectl get csr|grep 'Pending' | awk 'NR>0{print $1}'| xargs kubectl certificate approve
+#  run_once: true
 #  delegate_to: "{{ groups['k8s-master'][0] }}"
-#
-#
-#- name: 启动kube-proxy 服务
-#  service: name=kube-proxy  state=started enabled=yes  daemon_reload=yes
-#
-#- name: 检查集群状态
-#  shell: kubectl get nodes
-#  register: output
-#  tags:
-#      - check
+
+- name: 等待15秒，批准kubelet 的 TLS 证书请求
+  shell: sleep 15
+
+- name: 启动kube-proxy 服务
+  service: name=kube-proxy  state=started enabled=yes  daemon_reload=yes
+
+- name: 检查集群状态
+  shell: kubectl get nodes
+  register: output
+  tags:
+      - check
+
+- name: 打印集群检查结果信息 
+  debug: var=output.stdout_lines

@@ -50,6 +50,13 @@
      - {src: '/workspace/ansible/k8s/roles/etcd/templates/etcd.service.j2' , dest: '/usr/lib/systemd/system/etcd.service'}
      - {src: '/workspace/ansible/k8s/roles/etcd/templates/check.sh.j2' , dest: '/k8s/etcd/bin/check.sh'}
 
+- name: add check.sh
+  template: 'src={{ item.src }} dest={{ item.dest }} mode=0755'
+  with_items:
+     - {src: '/workspace/ansible/k8s/roles/etcd/templates/check.sh.j2' , dest: '/k8s/etcd/bin/check.sh'}
+  tags:
+     - check
+
 #- name: 暂停150s
 #  shell: systemctl daemon-reload && systemctl enable etcd && sleep 15 &&  systemctl start etcd 
 
